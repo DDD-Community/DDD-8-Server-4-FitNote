@@ -118,7 +118,11 @@ DATABASES = {
         'PASSWORD': get_secret("PASSWORD"),
         'HOST': get_secret("HOST"),
         'PORT': get_secret("PORT"),
-    }
+    },
+    'OPTIONS': {
+        'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'",
+    },
+
 }
 
 # Password validation
