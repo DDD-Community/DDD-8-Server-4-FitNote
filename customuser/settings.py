@@ -103,14 +103,23 @@ WSGI_APPLICATION = 'customuser.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# mysql 설정
+# DATABASES = {
+#     'default': {
+#         'ENGINE': get_secret("ENGINE"),
+#         'NAME': get_secret("NAME"),
+#         'USER': get_secret("USER"),
+#         'PASSWORD': get_secret("PASSWORD"),
+#         'HOST': get_secret("HOST"),
+#         'PORT': get_secret("PORT"),
+#     }
+# }
+
+# ec2 서버의 기본 장고 sqlite
 DATABASES = {
     'default': {
-        'ENGINE': get_secret("ENGINE"),
-        'NAME': get_secret("NAME"),
-        'USER': get_secret("USER"),
-        'PASSWORD': get_secret("PASSWORD"),
-        'HOST': get_secret("HOST"),
-        'PORT': get_secret("PORT"),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
