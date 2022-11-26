@@ -1,7 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,django,venv
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django,venv
 
+# local setting
 secrets.json
+local.py
 
 ### Django ###
 *.log

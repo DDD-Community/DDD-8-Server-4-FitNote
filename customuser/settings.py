@@ -41,8 +41,14 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+if os.path.isfile('/Users/int/Development/workspace/jwt_last/customuser/local.py') is True : 
+    local_check = 'local'
+    DBNAME = get_secret("SERVERLOCAL")
+else :
+    local_check = 'live'
+    DBNAME = get_secret("SERVERLIVE")
 
 # Application definition
 
@@ -104,22 +110,14 @@ WSGI_APPLICATION = 'customuser.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # mysql 설정
-# DATABASES = {
-#     'default': {
-#         'ENGINE': get_secret("ENGINE"),
-#         'NAME': get_secret("NAME"),
-#         'USER': get_secret("USER"),
-#         'PASSWORD': get_secret("PASSWORD"),
-#         'HOST': get_secret("HOST"),
-#         'PORT': get_secret("PORT"),
-#     }
-# }
-
-# ec2 서버의 기본 장고 sqlite
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': get_secret("ENGINE"),
+        'NAME': DBNAME,
+        'USER': get_secret("USER"),
+        'PASSWORD': get_secret("PASSWORD"),
+        'HOST': get_secret("HOST"),
+        'PORT': get_secret("PORT"),
     }
 }
 
@@ -145,9 +143,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -158,6 +156,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'customuser', 'static')
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
