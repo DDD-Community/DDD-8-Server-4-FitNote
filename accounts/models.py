@@ -7,7 +7,21 @@ from .managers import CustomUserManager
 
 class User(AbstractUser):
     username = None
+
     email = models.EmailField(_('email address'), unique=True)
+
+    user_name = models.CharField(max_length=100, null=False)
+    user_type = models.SmallIntegerField(null=True)
+
+    trainer_group = models.IntegerField(null=False, default=0)
+
+    user_height = models.DecimalField(null=True, max_digits=5, decimal_places=3) # 소수점 이하 3자리수의 999개까지 지정
+    user_weight = models.DecimalField(null=True, max_digits=5, decimal_places=3)
+
+    user_status = models.SmallIntegerField(null=False, default=1)
+
+    create_date = models.DateTimeField(null=False, auto_now_add=True)
+    update_date = models.DateTimeField(null=False, auto_now=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
