@@ -7,10 +7,23 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.models import User
 
+from rest_framework import exceptions
+from rest_framework.authentication import BaseAuthentication, CSRFCheck
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
 @api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes((IsAuthenticated,))
 @authentication_classes((JWTAuthentication,))
 def list(request):
-    members = User.objects.filter(user_type=1).order_by('-create_date')
-    member_list = serializers.serialize('json', members)
+    member_list = serializers.serialize('json', User.objects.filter(user_type=1).order_by('-id'), fields=('user_name'))
     return HttpResponse(member_list, content_type="text/json-comment-filtered")
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JWTAuthentication,))
+def detail(request):
+    member_detail = serializers.serialize('json', User.objects.filter(user_type=1).order_by('-id'), fields=('user_name', 'create_data', 'user_gender', 'user_height', 'user_weight'))
+    return HttpResponse(member_detail, content_type="text/json-comment-filtered")
+
