@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'storages',
+    'drf_yasg',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
