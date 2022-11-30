@@ -15,8 +15,8 @@ schema_url_patterns = [
 ]
 schema_view = get_schema_view(
   openapi.Info(
-    title="Django API",
-    default_version='v1',
+    title="fit note API 문서",
+    default_version='0.0.1',
     terms_of_service="https://www.google.com/policies/terms/",
   ),
   public=True,
