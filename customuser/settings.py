@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'members',
     'notes',
     'rest_framework',
     'rest_framework.authtoken',
@@ -69,6 +70,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'storages',
+    'drf_yasg',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -118,7 +121,11 @@ DATABASES = {
         'PASSWORD': get_secret("PASSWORD"),
         'HOST': get_secret("HOST"),
         'PORT': get_secret("PORT"),
-    }
+    },
+    'OPTIONS': {
+        'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'",
+    },
+
 }
 
 # Password validation
@@ -189,8 +196,20 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=28),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+DEFAULT_FILE_STORAGE = 'customuser.storages.MediaStorage'
+STATICFILES_STORAGE = 'customuser.storages.S3StaticStorage'
+
+MEDIAFILES_LOCATION = 'media'
+STATICFILES_LOCATION = 'static'
+
+AWS_ACCESS_KEY_ID = get_secret("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = get_secret("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = get_secret("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = get_secret("AWS_S3_REGION_NAME")
+
