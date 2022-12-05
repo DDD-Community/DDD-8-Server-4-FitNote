@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+def index(request):
+    return render(request, 'index.html')
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))

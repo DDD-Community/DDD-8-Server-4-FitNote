@@ -8,13 +8,35 @@ from accounts.models import User
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView 
+from django.http import JsonResponse
+
+import json
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 @authentication_classes((JWTAuthentication,))
 def list(request):
+    """
+        회원 리스트 호출
+        ---
+        # 내용
+            - title : 영화제목
+            - year : 영화 출시 년도
+            - genre : 영화 장르
+    """
     member_list = serializers.serialize('json', User.objects.filter(user_type=1).order_by('-id'), fields=('user_name'))
-    return HttpResponse(member_list, content_type="text/json-comment-filtered")
+    member_json = json.loads(member_list)
+
+    response = {}
+    response["result"] = "false"
+    response["error_code"] = "301"
+    response["message"] = "잘못된 요청입니다."
+    response["return_url"] = "/"
+    response["data"] = member_json
+    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
+
+    # print(member_json[0]['fields'])
+    # return HttpResponse(member_json, content_type="text/json-comment-filtered")
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
