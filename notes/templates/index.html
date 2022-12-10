@@ -1,0 +1,13 @@
+<form method="post" action="{% url 'account_login' %}" class="sign-in-form">
+    {%csrf_token%}
+    <input type="text" id="inputEmail" name="email" class="form-control" placeholder="Id" required autofocus>
+
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+
+    <button class="btn btn-lg btn-secondary btn-block" id="btn-click" type="submit">Sign in</button>
+
+    <a href="{% url 'index' %}">
+        <button type="button" class="btn btn-outline-dark">취소</button>
+    </a>
+
+</form>

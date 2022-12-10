@@ -5,12 +5,17 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+def index(request):
+    return render(request, 'index.html')
+
+@api_view(['GET'])
+def docs(request):
+    return render(request, 'docs.html')
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 @authentication_classes((JWTAuthentication,))
 def getApi(request):
-    posts = [
-    ]
+    posts = []
     post_list = serializers.serialize('json', posts)
     return HttpResponse(post_list, content_type="text/json-comment-filtered")
