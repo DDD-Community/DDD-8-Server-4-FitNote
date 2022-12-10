@@ -9,10 +9,13 @@ def index(request):
     return render(request, 'index.html')
 
 @api_view(['GET'])
+def docs(request):
+    return render(request, 'docs.html')
+
+@api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 @authentication_classes((JWTAuthentication,))
 def getApi(request):
-    posts = [
-    ]
+    posts = []
     post_list = serializers.serialize('json', posts)
     return HttpResponse(post_list, content_type="text/json-comment-filtered")
