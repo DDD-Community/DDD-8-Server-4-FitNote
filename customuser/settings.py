@@ -93,7 +93,7 @@ ROOT_URLCONF = 'customuser.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['customuser/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -196,8 +196,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=28),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=21),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=31),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }

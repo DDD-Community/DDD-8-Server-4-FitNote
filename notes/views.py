@@ -13,6 +13,10 @@ def docs(request):
     return render(request, 'docs.html')
 
 @api_view(['GET'])
+def memberDocs(request):
+    return render(request, 'memberDocs.html')
+
+@api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 @authentication_classes((JWTAuthentication,))
 def getApi(request):
