@@ -8,11 +8,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 def index(request):
     return render(request, 'index.html')
 
-@api_view(['GET'])
 def docs(request):
     return render(request, 'docs.html')
 
-@api_view(['GET'])
 def memberDocs(request):
     return render(request, 'memberDocs.html')
 

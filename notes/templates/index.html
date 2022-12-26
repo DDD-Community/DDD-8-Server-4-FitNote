@@ -1,13 +1,13 @@
-<form method="post" action="{% url 'account_login' %}" class="sign-in-form">
-    {%csrf_token%}
-    <input type="text" id="inputEmail" name="email" class="form-control" placeholder="Id" required autofocus>
+{% extends 'base.html' %}
+{% block content %}
 
-    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+<a href="{% url 'rest_register' %}">회원가입</a>
+<br>
+<a href="{% url 'rest_login' %}">로그인</a>
+<br>
+<a href="{% url 'rest_logout' %}">로그아웃</a>
+<br>
+<a href="{% url 'list' %}">리스트</a>
 
-    <button class="btn btn-lg btn-secondary btn-block" id="btn-click" type="submit">Sign in</button>
 
-    <a href="{% url 'index' %}">
-        <button type="button" class="btn btn-outline-dark">취소</button>
-    </a>
-
-</form>
+{% endblock %}
