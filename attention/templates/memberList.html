@@ -1,0 +1,15 @@
+<p>안녕하세요 {{trainer.user_name}} 트레이너님</p>
+
+<a href="{% url 'memberSetting' trainer.id %}">설정</a>
+<br>
+<p>회원 ({{member_count}})</p>
+<hr>
+
+{% for member in members %}
+
+<a href="{% url 'memberInfo' member.id %}">{{member.user_name}}</a><a href="{% url 'lessonNow' member.id 20230107 %}">운동일지</a>
+<br>
+
+{% endfor %}
+<br>
+<a href="{% url 'memberAdd' trainer.user_id %}">회원추가</a>

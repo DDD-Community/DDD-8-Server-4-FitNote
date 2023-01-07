@@ -1,6 +1,6 @@
 <p>운동일지</p>
 
-"{{user_id}}"님 안녕하세요
+"{{member.user_name}}"님 안녕하세요
 
 <br><br>
 
@@ -28,8 +28,8 @@
             <td>{{ lesson.weight }}</td>
             <td>{{ lesson.count }}</td>
             <td>{{ lesson.set }}</td>
-            <td><a href="{% url 'delete' lesson.id %}">삭제</a></td>
-            <td><a href="{% url 'completion' lesson.id %}">완료</a></td>
+            <td><a href="{% url 'delete' user_id lesson.id %}">삭제</a></td>
+            <td><a href="{% url 'completion' user_id lesson.id %}">완료</a></td>
         </tr>
 
         {% else %}
@@ -39,8 +39,8 @@
             <td>{{ lesson.weight }}</td>
             <td>{{ lesson.count }}</td>
             <td>{{ lesson.set }}</td>
-            <td><a href="{% url 'delete' lesson.id %}">삭제</a></td>
-            <td><a href="{% url 'completion' lesson.id %}">완료</a></td>
+            <td><a href="{% url 'delete' user_id lesson.id %}">삭제</a></td>
+            <td><a href="{% url 'completion' user_id lesson.id %}">완료</a></td>
         </tr>
         {% endif %}
 
@@ -55,7 +55,7 @@
 
 
   <br>
-  <form action="{% url 'add' %}">
+  <form action="{% url 'add' user_id %}">
       <h4>운동제목: </h4>
       <input type="text" name="name">
       <br>

@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'storages',
     'drf_yasg',
     'hypeboy',
+    'attention',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
