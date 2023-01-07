@@ -43,12 +43,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-if os.path.isfile('/Users/int/Development/workspace/jwt_last/customuser/local.py') is True : 
-    local_check = 'local'
-    DBNAME = get_secret("SERVERLOCAL")
-else :
-    local_check = 'live'
-    DBNAME = get_secret("SERVERLIVE")
+# if os.path.isfile('/Users/int/Development/workspace/jwt_last/customuser/local.py') is True : 
+#     local_check = 'local'
+#     print(1)
+DBNAME = get_secret("SERVERLOCAL")
+# else :
+#     local_check = 'live'
+#     DBNAME = get_secret("SERVERLIVE")
 
 # Application definition
 
@@ -72,6 +73,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'storages',
     'drf_yasg',
+    'hypeboy',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
