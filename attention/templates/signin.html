@@ -1,0 +1,15 @@
+
+<br>
+<form method="POST" action="{% url 'signin'%}">
+    {%csrf_token%}
+    <h4>email: </h4>
+    <input type="text" name="email">
+    <br>
+    <br>
+    <h4>password: </h4>
+    <input type="text" name="password">
+    <br>
+    <br>
+    <input class="btn btn-dark" type="submit" value="회원가입">
+</form>
+</div>

@@ -43,12 +43,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-if os.path.isfile('/Users/int/Development/workspace/jwt_last/customuser/local.py') is True : 
-    local_check = 'local'
-    DBNAME = get_secret("SERVERLOCAL")
-else :
-    local_check = 'live'
-    DBNAME = get_secret("SERVERLIVE")
+# if os.path.isfile('/Users/int/Development/workspace/jwt_last/customuser/local.py') is True : 
+#     local_check = 'local'
+#     print(1)
+DBNAME = get_secret("SERVERLOCAL")
+# else :
+#     local_check = 'live'
+#     DBNAME = get_secret("SERVERLIVE")
 
 # Application definition
 
@@ -72,6 +73,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'storages',
     'drf_yasg',
+    'hypeboy',
+    'attention',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -93,7 +96,7 @@ ROOT_URLCONF = 'customuser.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['customuser/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -196,8 +199,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=28),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=21),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=31),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }

@@ -33,6 +33,6 @@ urlpatterns = [
     path('api/member/', include('members.urls')),
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/', include('dj_rest_auth.registration.urls')),
-    path('accounts/', include('allauth.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('hypeboy/', include('hypeboy.urls')),
+    path('attention/', include('attention.urls')),
 ]
