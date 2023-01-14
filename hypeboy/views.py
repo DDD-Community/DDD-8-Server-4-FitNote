@@ -12,12 +12,13 @@ from attention.models import Member
 def hypeboy(request):
     return render(request, 'hypeboy.html')
 
-def lessonAdd(request):
-    return render(request, 'lessonAdd.html')
+def lessonAdd(request, user_id):
+    return render(request, 'lessonAdd.html', {'user_id' : user_id})
 
 def lessonIng(request, user_id):
+    member = Member.objects.filter(user_id=user_id)
     lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
-    return render(request, 'lessonIng.html', {'lessons': lessons, 'user_id' : user_id})
+    return render(request, 'lessonIng.html', {'member': member[0], 'lessons' : lessons})
 
 def lessonNow(request, user_id, start_date):
     member = Member.objects.filter(id=user_id)
