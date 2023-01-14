@@ -216,3 +216,8 @@ AWS_SECRET_ACCESS_KEY = get_secret("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = get_secret("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = get_secret("AWS_S3_REGION_NAME")
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+}
+
+ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
