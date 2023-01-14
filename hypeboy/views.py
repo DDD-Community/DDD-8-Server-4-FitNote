@@ -5,10 +5,12 @@ from django.utils.dateformat import DateFormat
 from django.db.models import Count
 from django.http import JsonResponse
 from rest_framework_simplejwt.models import TokenUser
+from django.core import serializers
 
 from .models import Lesson
 from attention.views import getUser
 from attention.models import Member
+import json
 
 
 # Create your views here.
@@ -77,21 +79,35 @@ def completion(request, user_id, lesson_id):
 
 def schedule(request):
 
+    data = {}
+
+    # 토큰으로 유저 email 가져오기
     email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
 
-    member = Member.objects.filter(user_email=email)
+    # 유저 정보
+    user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
 
-    print(member)
+    lessons_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id']).values('start_date').annotate(entries=Count('start_date'))))
 
-    today = DateFormat(datetime.now()).format('Ymd')
-    # member = Member.objects.filter(user_id=user_id)
-    # lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
-    # lessons_name_list = Lesson.objects.filter(user_id=user_id, start_date=lessons[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
+    data["user_info"] = user_info[0]['fields']
+
+    if not lessons_list :
+        data["lessons_list"] = []
+        data["exercise_list"] = []
+    else :
+        data["lessons_list"] = lessons_list[0]['fields']
+        exercise_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['fields']['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))))
+
+        if not exercise_list :
+            data["exercise_list"] = []
+        else :
+            data["exercise_list"] = exercise_list[0]['fields']
 
     response = {}
 
     response["result"] = "true"
     response["status_code"] = "200"
     response["message"] = "성공!"
+    response["data"] = data
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
