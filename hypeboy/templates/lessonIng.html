@@ -1,15 +1,23 @@
-<p>운동일지</p>
-
-"{{user_id}}"님 안녕하세요
+{{member.user_name}} 회원님 수업 목록
 
 <br><br>
-
+    <a href="{% url 'lessonIng' member.user_id %}">예정된 수업</a>
+    <a> / </a>
+    <a href="{% url 'lessonEnd' %}">완료한 수업</a>
+<br><br>
 {% for lesson in lessons %}
 
-<a href="{% url 'lessonNow' user.id 20230107 %}">{{ lesson.start_date }} 운동 일지</a>
+
+{{ lesson.start_date }}
+<br>
+{% for lnl in lessons_name_list %}
+{{lnl.name}}
+{% endfor %}
+<br>
+<a href="#">편집</a><a> / </a><a href="{% url 'lessonNow' member.user_id today %}">수업 시작</a>
 <br>
 
 {% endfor %}
 <br>
 
-<a href="{% url 'lessonAdd' %}">레슨 추가</a>
+<a href="{% url 'lessonAdd' member.user_id %}">수업 추가</a>
