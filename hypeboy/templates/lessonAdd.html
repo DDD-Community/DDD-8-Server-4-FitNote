@@ -1,22 +1,17 @@
-레슨 추가 페이지
+수업 추가
 
-{{user_id}}
 <br>
-<form action="#">
-    <h4>운동제목: </h4>
-    <input type="text" name="name">
+<br>
+날짜 : {{today}}
+<br>
+<br>
+
+<form action="{% url 'add' member.user_id today %}">
+    <input type="text" name="name" placeholder="운동명">
     <br>
-    <br>
-    <h4>중량: </h4>
-    <input type="text" name="weight">
-    <br>
-    <br>
-    <h4>횟수: </h4>
-    <input type="text" name="count">
-    <br>
-    <br>
-    <h4>세트: </h4>
-    <input type="text" name="set">
+    <input type="text" name="weight" placeholder="0 세트">
+    <input type="text" name="count" placeholder="0 kg">
+    <input type="text" name="set" placeholder="0 회">
     <input class="btn btn-dark" type="submit" value="운동 추가">
 </form>
 </div>

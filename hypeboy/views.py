@@ -13,23 +13,27 @@ def hypeboy(request):
     return render(request, 'hypeboy.html')
 
 def lessonAdd(request, user_id):
-    return render(request, 'lessonAdd.html', {'user_id' : user_id})
+    today = DateFormat(datetime.now()).format('Ymd')
+    member = Member.objects.filter(user_id=user_id)
+    return render(request, 'lessonAdd.html', {'member' : member[0], 'today' : today})
 
 def lessonIng(request, user_id):
+    today = DateFormat(datetime.now()).format('Ymd')
     member = Member.objects.filter(user_id=user_id)
     lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
-    return render(request, 'lessonIng.html', {'member': member[0], 'lessons' : lessons})
+    lessons_name_list = Lesson.objects.filter(user_id=user_id, start_date=lessons[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
+    return render(request, 'lessonIng.html', {'member': member[0], 'lessons' : lessons, 'today' : today, 'lessons_name_list' : lessons_name_list})
 
-def lessonNow(request, user_id, start_date):
-    member = Member.objects.filter(id=user_id)
-    lessons = Lesson.objects.filter(user_id=user_id, start_date=start_date, view_yn=1).order_by('completion', '-id', '-create_date')
+def lessonNow(request, user_id, today):
+    member = Member.objects.filter(user_id=user_id)
+    lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).order_by('completion', '-id', '-create_date')
     return render(request, 'lessonNow.html', {'lessons': lessons, 'user_id' : user_id, 'member' : member[0]})
 
 def lessonEnd(request):
     return render(request, 'lessonEnd.html')
 
 # 레슨 추가
-def add(request, user_id):
+def add(request, user_id, today):
     today = DateFormat(datetime.now()).format('Ymd')
 
     lesson = Lesson()
