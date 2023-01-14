@@ -10,4 +10,5 @@ urlpatterns = [
     path('hypeboy/<int:user_id>', views.lessonIng, name='lessonIng'),
     path('lessonNow/<int:user_id>/<int:today>', views.lessonNow, name='lessonNow'),
     path('lessonEnd/', views.lessonEnd, name='lessonEnd'),
+    path('schedule/', views.schedule, name='schedule'),
 ]

@@ -21,6 +21,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.db.models import Count
+from rest_framework_simplejwt.tokens import AccessToken
 
 UserModel = get_user_model()
 
@@ -146,3 +147,8 @@ def delete(request, trainer_id):
     member.save()
 
     return render(request, 'index.html')
+
+def getUser(token_str):
+    access_token = AccessToken(token_str)
+    user = User.objects.get(id=access_token['user_id'])
+    return user

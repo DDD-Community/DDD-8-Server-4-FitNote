@@ -3,8 +3,11 @@ from django.utils import timezone
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.db.models import Count
+from django.http import JsonResponse
+from rest_framework_simplejwt.models import TokenUser
 
 from .models import Lesson
+from attention.views import getUser
 from attention.models import Member
 
 
@@ -69,4 +72,26 @@ def completion(request, user_id, lesson_id):
     lessons.completion = 1
     lessons.save()
     
-    return redirect('lessonNow', user_id=user_id, start_date=today)   
+    return redirect('lessonNow', user_id=user_id, start_date=today)
+
+
+def schedule(request):
+
+    email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
+
+    member = Member.objects.filter(user_email=email)
+
+    print(member)
+
+    today = DateFormat(datetime.now()).format('Ymd')
+    # member = Member.objects.filter(user_id=user_id)
+    # lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
+    # lessons_name_list = Lesson.objects.filter(user_id=user_id, start_date=lessons[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
+
+    response = {}
+
+    response["result"] = "true"
+    response["status_code"] = "200"
+    response["message"] = "성공!"
+
+    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
