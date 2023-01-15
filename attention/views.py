@@ -22,6 +22,8 @@ from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.db.models import Count
 from rest_framework_simplejwt.tokens import AccessToken
+from django.http import JsonResponse
+from django.core import serializers
 
 UserModel = get_user_model()
 
@@ -153,3 +155,57 @@ def getUser(token_str):
     access_token = AccessToken(token_str)
     user = User.objects.get(id=access_token['user_id'])
     return user
+
+def getMemberList(request):
+
+    today = DateFormat(datetime.now()).format('Ymd')
+
+    response = {}
+    data = {}
+
+    getMemberList = []
+
+    # 토큰으로 유저 email 가져오기
+    email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
+
+    # 유저 정보
+    user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
+
+    if not user_info :
+
+        response["result"] = "true"
+        response["status_code"] = "800"
+        response["message"] = "유저 정보 없음"
+        response["data"] = []
+
+    else :
+
+        user_id = user_info[0]['fields']['user_id']
+
+        getTrainerInfo = json.loads(serializers.serialize('json', Member.objects.filter(user_id = user_id)))
+
+        setMemberList = json.loads(serializers.serialize('json', Member.objects.filter(trainer_group=user_id, user_type=2).order_by('-id')))
+
+        data["today"] = today
+        data["getMemberCount"] = len(setMemberList)
+
+        if not getTrainerInfo :
+            data["getTrainerInfo"] = []
+        else :
+            data["getTrainerInfo"] = getTrainerInfo[0]['fields']
+
+        if not setMemberList :
+            data["getMemberList"] = []
+            data["getMemberCount"] = 0
+        else :
+            for i in range(len(setMemberList)):
+                getMemberList.append(setMemberList[i]['fields'])
+
+            data["getMemberList"] = getMemberList
+
+        response["result"] = "true"
+        response["status_code"] = "200"
+        response["message"] = "성공!"
+        response["data"] = data
+
+    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})

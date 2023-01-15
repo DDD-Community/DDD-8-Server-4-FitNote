@@ -84,6 +84,7 @@ def completion(request, user_id, lesson_id):
 
 def schedule(request):
 
+    response = {}
     data = {}
 
     # 토큰으로 유저 email 가져오기
@@ -92,27 +93,34 @@ def schedule(request):
     # 유저 정보
     user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
 
-    lessons_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id']).values('start_date').annotate(entries=Count('start_date'))))
+    if not user_info :
+        response["result"] = "true"
+        response["status_code"] = "800"
+        response["message"] = "유저 정보 없음"
+        response["data"] = []
 
-    data["user_info"] = user_info[0]['fields']
-
-    if not lessons_list :
-        data["lessons_list"] = []
-        data["exercise_list"] = []
     else :
-        data["lessons_list"] = lessons_list[0]['fields']
-        exercise_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['fields']['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))))
+        lessons_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id']).values('start_date').annotate(entries=Count('start_date'))))
 
-        if not exercise_list :
+        data["user_info"] = user_info[0]['fields']
+
+        if not lessons_list :
+            data["lessons_list"] = []
             data["exercise_list"] = []
         else :
-            data["exercise_list"] = exercise_list[0]['fields']
+            data["lessons_list"] = lessons_list[0]['fields']
+            exercise_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['fields']['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))))
 
-    response = {}
+            if not exercise_list :
+                data["exercise_list"] = []
+            else :
+                data["exercise_list"] = exercise_list[0]['fields']
 
-    response["result"] = "true"
-    response["status_code"] = "200"
-    response["message"] = "성공!"
-    response["data"] = data
+        
+
+        response["result"] = "true"
+        response["status_code"] = "200"
+        response["message"] = "성공!"
+        response["data"] = data
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
