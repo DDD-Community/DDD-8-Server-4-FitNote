@@ -19,18 +19,23 @@ def hypeboy(request):
 
 def lessonAdd(request, user_id):
     today = DateFormat(datetime.now()).format('Ymd')
-    member = Member.objects.filter(user_id=user_id)
+    member = Member.objects.filter(id=user_id)
     return render(request, 'lessonAdd.html', {'member' : member[0], 'today' : today})
 
 def lessonIng(request, user_id):
     today = DateFormat(datetime.now()).format('Ymd')
-    member = Member.objects.filter(user_id=user_id)
+    member = Member.objects.filter(id=user_id)
     lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
-    lessons_name_list = Lesson.objects.filter(user_id=user_id, start_date=lessons[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
+
+    if lessons :
+        lessons_name_list = Lesson.objects.filter(user_id=user_id, start_date=lessons[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
+    else :
+        lessons_name_list = []
+        
     return render(request, 'lessonIng.html', {'member': member[0], 'lessons' : lessons, 'today' : today, 'lessons_name_list' : lessons_name_list})
 
 def lessonNow(request, user_id, today):
-    member = Member.objects.filter(user_id=user_id)
+    member = Member.objects.filter(id=user_id)
     lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).order_by('completion', '-id', '-create_date')
     return render(request, 'lessonNow.html', {'lessons': lessons, 'user_id' : user_id, 'member' : member[0]})
 
@@ -39,19 +44,19 @@ def lessonEnd(request):
 
 # 레슨 추가
 def add(request, user_id, today):
-    today = DateFormat(datetime.now()).format('Ymd')
 
-    lesson = Lesson()
-    lesson.user_id = user_id
-    lesson.name = request.GET['name']
-    lesson.weight = request.GET['weight']
-    lesson.count = request.GET['count']
-    lesson.set = request.GET['set']
-    lesson.start_date = today
-    lesson.create_date = timezone.datetime.now()
-    lesson.save()
+    for i in range(1, int(request.GET['set'])+1) :
+        lesson = Lesson()
+        lesson.user_id = user_id
+        lesson.name = request.GET['name']
+        lesson.weight = request.GET['weight']
+        lesson.count = request.GET['count']
+        lesson.set = i
+        lesson.start_date = today
+        lesson.create_date = timezone.datetime.now()
+        lesson.save()
 
-    return redirect('lessonNow', user_id=user_id, start_date=today)
+    return redirect('lessonIng', user_id=user_id)
 
 # 운동 미노출 처리
 def delete(request, user_id, lesson_id):
@@ -62,7 +67,7 @@ def delete(request, user_id, lesson_id):
     lessons.view_yn = 0
     lessons.save()
     
-    return redirect('lessonNow', user_id=user_id, start_date=today)
+    return redirect('lessonNow', user_id=user_id, today=today)
 
 # 운동 완료 처리
 def completion(request, user_id, lesson_id):
@@ -74,11 +79,12 @@ def completion(request, user_id, lesson_id):
     lessons.completion = 1
     lessons.save()
     
-    return redirect('lessonNow', user_id=user_id, start_date=today)
+    return redirect('lessonNow', user_id=user_id, today=today)
 
 
 def schedule(request):
 
+    response = {}
     data = {}
 
     # 토큰으로 유저 email 가져오기
@@ -87,27 +93,34 @@ def schedule(request):
     # 유저 정보
     user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
 
-    lessons_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id']).values('start_date').annotate(entries=Count('start_date'))))
+    if not user_info :
+        response["result"] = "true"
+        response["status_code"] = "800"
+        response["message"] = "유저 정보 없음"
+        response["data"] = []
 
-    data["user_info"] = user_info[0]['fields']
-
-    if not lessons_list :
-        data["lessons_list"] = []
-        data["exercise_list"] = []
     else :
-        data["lessons_list"] = lessons_list[0]['fields']
-        exercise_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['fields']['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))))
+        lessons_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id']).values('start_date').annotate(entries=Count('start_date'))))
 
-        if not exercise_list :
+        data["user_info"] = user_info[0]['fields']
+
+        if not lessons_list :
+            data["lessons_list"] = []
             data["exercise_list"] = []
         else :
-            data["exercise_list"] = exercise_list[0]['fields']
+            data["lessons_list"] = lessons_list[0]['fields']
+            exercise_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['fields']['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))))
 
-    response = {}
+            if not exercise_list :
+                data["exercise_list"] = []
+            else :
+                data["exercise_list"] = exercise_list[0]['fields']
 
-    response["result"] = "true"
-    response["status_code"] = "200"
-    response["message"] = "성공!"
-    response["data"] = data
+        
+
+        response["result"] = "true"
+        response["status_code"] = "200"
+        response["message"] = "성공!"
+        response["data"] = data
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
