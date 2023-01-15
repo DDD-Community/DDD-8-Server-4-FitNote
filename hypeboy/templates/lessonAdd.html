@@ -6,12 +6,12 @@
 <br>
 <br>
 
-<form action="{% url 'add' member.user_id today %}">
+<form action="{% url 'add' member.id today %}">
     <input type="text" name="name" placeholder="운동명">
     <br>
-    <input type="text" name="weight" placeholder="0 세트">
-    <input type="text" name="count" placeholder="0 kg">
-    <input type="text" name="set" placeholder="0 회">
+    <input type="text" name="set" placeholder="0 세트">
+    <input type="text" name="weight" placeholder="0 kg">
+    <input type="text" name="count" placeholder="0 회">
     <input class="btn btn-dark" type="submit" value="운동 추가">
 </form>
 </div>

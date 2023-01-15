@@ -88,10 +88,11 @@ class LogoutViews(LogoutView):
 signout = LogoutViews.as_view()
 
 def memberList(request, user_id):
+    today = DateFormat(datetime.now()).format('Ymd')
     trainer = Member.objects.filter(user_id = user_id)
     members = Member.objects.filter(trainer_group=user_id, user_type=2).order_by('-id')
     member_count = members.count()
-    return render(request, 'memberList.html', {'members' : members, 'trainer' : trainer[0], 'member_count' : member_count})
+    return render(request, 'memberList.html', {'members' : members, 'trainer' : trainer[0], 'member_count' : member_count, 'today' : today})
 
 def memberAdd(request, user_id):
     return render(request, 'memberAdd.html', {'user_id':user_id})

@@ -1,7 +1,7 @@
 {{member.user_name}} 회원님 수업 목록
 
 <br><br>
-    <a href="{% url 'lessonIng' member.user_id %}">예정된 수업</a>
+    <a href="{% url 'lessonIng' member.id %}">예정된 수업</a>
     <a> / </a>
     <a href="{% url 'lessonEnd' %}">완료한 수업</a>
 <br><br>
@@ -14,10 +14,10 @@
 {{lnl.name}}
 {% endfor %}
 <br>
-<a href="#">편집</a><a> / </a><a href="{% url 'lessonNow' member.user_id today %}">수업 시작</a>
+<a href="#">편집</a><a> / </a><a href="{% url 'lessonNow' member.id today %}">수업 시작</a>
 <br>
 
 {% endfor %}
 <br>
 
-<a href="{% url 'lessonAdd' member.user_id %}">수업 추가</a>
+<a href="{% url 'lessonAdd' member.id %}">수업 추가</a>
