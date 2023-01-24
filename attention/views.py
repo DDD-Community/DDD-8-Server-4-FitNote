@@ -27,6 +27,20 @@ from django.core import serializers
 
 UserModel = get_user_model()
 
+## jwt 생성 : membership 테이블 적재 동시 수행하기 위한 함수
+def jwt_signup(id, fullname, email):
+
+    member = Member()
+    member.user_id = id
+    member.user_name = fullname
+    member.user_email = email
+    member.user_type = 1
+    member.create_date = timezone.datetime.now()
+    member.save()
+
+    return 1
+
+
 def signup(request):
 
     today = DateFormat(datetime.now()).format('Ymd')
