@@ -46,7 +46,7 @@ ALLOWED_HOSTS = ['*']
 # if os.path.isfile('/Users/int/Development/workspace/jwt_last/customuser/local.py') is True : 
 #     local_check = 'local'
 #     print(1)
-DBNAME = get_secret("SERVERLOCAL")
+DBNAME = get_secret("SERVERLIVE")
 # else :
 #     local_check = 'live'
 #     DBNAME = get_secret("SERVERLIVE")

@@ -100,7 +100,12 @@ def schedule(request):
         response["data"] = []
 
     else :
-        lessons_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id']).values('start_date').annotate(entries=Count('start_date'))))
+
+        user_id = user_info[0]['fields']['user_id']
+
+        lessons_list = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
+
+        print(lessons_list)
 
         data["user_info"] = user_info[0]['fields']
 
@@ -108,15 +113,13 @@ def schedule(request):
             data["lessons_list"] = []
             data["exercise_list"] = []
         else :
-            data["lessons_list"] = lessons_list[0]['fields']
-            exercise_list = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['fields']['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))))
+            data["lessons_list"] = lessons_list[0]
+            exercise_list = Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
 
             if not exercise_list :
                 data["exercise_list"] = []
             else :
-                data["exercise_list"] = exercise_list[0]['fields']
-
-        
+                data["exercise_list"] = exercise_list
 
         response["result"] = "true"
         response["status_code"] = "200"
