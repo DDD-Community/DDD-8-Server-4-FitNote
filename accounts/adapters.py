@@ -16,6 +16,6 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user.save()
 
         ## 이 곳에 멤버십 회원 DB 추가 
-        jwt_signup(user.id, user, fullname)
+        jwt_signup(user.id, fullname, user)
 
         return user

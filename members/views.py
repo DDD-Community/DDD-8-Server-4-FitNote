@@ -31,13 +31,7 @@ def list(request):
 @permission_classes((IsAuthenticated,))
 @authentication_classes((JWTAuthentication,))
 def detail(request):
-    
-    print('--------------------------------')
-    print(request.META['HTTP_AUTHORIZATION'][7:])
-    print('--------------------------------')
-    print(TokenUser(request.META['HTTP_AUTHORIZATION'][7:]))
-    print('--------------------------------')
-
+ 
     user_name = request.GET['userName']
 
     member_detail = serializers.serialize('json', User.objects.filter(user_type=1, user_name=user_name).order_by('-id'), fields=('user_name', 'create_data', 'user_gender', 'user_height', 'user_weight'))
