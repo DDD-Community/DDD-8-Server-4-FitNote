@@ -1,38 +1,27 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
-from datetime import datetime
-from django.utils.dateformat import DateFormat
+from django.shortcuts import render, redirect
 from django.db.models import Count
 from django.http import JsonResponse
-from rest_framework_simplejwt.models import TokenUser
 from django.core import serializers
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from django.contrib.auth import login, authenticate
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from .models import Lesson
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from hypeboy.models import Lesson
 from attention.views import getUser
 from attention.models import Member
-import json
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+from django.utils.dateformat import DateFormat
+from django.utils import timezone
+from datetime import datetime
+
 try:
     from django.utils import simplejson as json
 except ImportError:
     import json
-from django.contrib.auth import (
-    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash,
-)
-from django.utils import timezone
-from datetime import datetime
-from django.utils.dateformat import DateFormat
-from django.db.models import Count
-from django.http import JsonResponse
-from django.core import serializers
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-
-
 
 # Create your views here.
 def hypeboy(request):

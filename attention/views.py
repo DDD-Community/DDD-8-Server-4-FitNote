@@ -1,112 +1,28 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import auth
-from django.contrib import messages
-from django.contrib.auth.views import LoginView, LogoutView
-from django.conf import settings
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from django.core import serializers
+from django.http import JsonResponse
+from django.utils.dateformat import DateFormat
+from django.utils import timezone
+from datetime import datetime
+
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.permissions import IsAuthenticated
+
 try:
     from django.utils import simplejson as json
 except ImportError:
     import json
-from django.contrib.auth import (
-    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash,
-)
-from .models import Member
-from django.utils import timezone
+
+from attention.models import Member
 from accounts.models import User
-from django.utils import timezone
-from datetime import datetime
-from django.utils.dateformat import DateFormat
-from django.db.models import Count
-from rest_framework_simplejwt.tokens import AccessToken
-from django.http import JsonResponse
-from django.core import serializers
+
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 UserModel = get_user_model()
-
-## jwt 생성 : membership 테이블 적재 동시 수행하기 위한 함수
-def jwt_signup(id, fullname, email):
-
-    member = Member()
-    member.user_id = id
-    member.user_name = fullname
-    member.user_email = email
-    member.user_type = 1
-    member.create_date = timezone.datetime.now()
-    member.save()
-
-    return 1
-
-
-def signup(request):
-
-    today = DateFormat(datetime.now()).format('Ymd')
-
-    if request.method == 'POST':
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        email = request.POST['email']
-
-        if password1 == password2:
-            if User.objects.filter(email=email).exists():
-                messages.info(request, '이미 존재하는 회원입니다.')
-                return render(request, 'signup.html')
-            else:
-                user = User.objects.create_user(password=password1, email=email)
-                
-                member = Member()
-                member.user_id = user.id
-                member.user_name = username
-                member.user_email = email
-                member.user_type = 1
-                member.create_date = timezone.datetime.now()
-                member.save()
-
-                auth.login(request, user)
-            return redirect('memberList', user_id=user.id)
-        else:
-            messages.info(request, '비밀번호가 일치하지 않습니다.')
-            return render(request, 'signup.html')
-        
-    return render(request, 'signup.html')
-
-def signin(request):
-    if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
-
-        user = authenticate(email=email, password = password)
-        member = Member.objects.filter(user_id=user.id)
-
-        if member[0].user_status == 2:
-            messages.info(request, '탈퇴된 회원입니다.')
-            return render(request, 'signin.html')
-            
-        if User.objects.filter(email=email).exists():
-            if user is not None:
-                login(request, user)
-                return redirect('memberList', user_id=user.id)
-            else:
-                messages.info(request, '비밀번호를 다시 입력해주세요.')
-                return render(request, 'signin.html')
-        else:
-            messages.info(request, '존재하지 않는 회원입니다.')
-            return render(request, 'signin.html')
-    else:
-        return render(request, 'signin.html')
-
-class LogoutViews(LogoutView):
-    next_page = settings.LOGOUT_REDIRECT_URL
-signout = LogoutViews.as_view()
 
 def memberList(request, user_id):
     today = DateFormat(datetime.now()).format('Ymd')
