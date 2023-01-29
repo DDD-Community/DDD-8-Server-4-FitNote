@@ -18,7 +18,7 @@ urlpatterns = [
 # 스키마 뷰 셋팅
 schema_view = get_schema_view(
   openapi.Info(
-    title="fit note API 문서",
+    title="Fit Note API 문서",
     default_version='0.0.1',
     terms_of_service="https://www.google.com/policies/terms/",
   ),
