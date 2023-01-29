@@ -13,8 +13,6 @@ urlpatterns = [
     path('accounts/', include('dj_rest_auth.registration.urls')),
     path('hypeboy/', include('hypeboy.urls')),
     path('attention/', include('attention.urls')),
-    path('api/note/', include('notes.urls')),
-    path('api/member/', include('members.urls')),
 ]
 
 # 스키마 뷰 셋팅
