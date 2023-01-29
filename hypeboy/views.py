@@ -138,11 +138,13 @@ def schedule(request):
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 
-# 레슨 추가
+
+######################################################### 트레이너가 예정된 수업 START #########################################################
 @swagger_auto_schema(
     method='POST',
-    operation_id='레슨 추가 ?',
-    operation_description='수강생을 등록 합니다.',
+    operation_id='예정된 수업',
+    operation_description=
+        '트레이너가 예정된 수업을 가져옵니다. >> https://www.figma.com/file/9A22UfWb1Kmt8gwr11u0I9/GUI?node-id=294%3A5057&t=suTWrwzQMntuXORc-4',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
     ),
@@ -152,8 +154,88 @@ def schedule(request):
         schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'access_token': openapi.Schema(type=openapi.TYPE_STRING, description="Access Token"),
+                'getTrainerInfo': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
                 'refresh_token': openapi.Schema(type=openapi.TYPE_STRING, description="Refresh Token"),
+            }
+        )
+    )}
+)
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes((JWTAuthentication,))
+def ingLesson(request):
+
+    today = DateFormat(datetime.now()).format('Ymd')
+
+    response = {}
+    data = {}
+
+    # 토큰으로 유저 email 가져오기
+    email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
+
+    # 유저 정보
+    user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
+
+
+    if not user_info :
+
+        response["result"] = "true"
+        response["status_code"] = "800"
+        response["message"] = "유저 정보 없음"
+        response["data"] = []
+
+    else :
+        user_id = user_info[0]['fields']['user_id']
+
+
+        today = DateFormat(datetime.now()).format('Ymd')
+        # member = Member.objects.filter(id=user_id)
+        # lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
+
+        getTrainerInfo = json.loads(serializers.serialize('json', Member.objects.filter(id = user_id)))
+        lessons = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))))
+
+        if not getTrainerInfo :
+            data["getTrainerInfo"] = []
+        else :
+            data["getTrainerInfo"] = getTrainerInfo[0]['fields']
+
+        if not lessons :
+            data["lessons"] = []
+        else :
+            data["lessons"] = lessons[0]['fields']
+
+        data["today"] = today
+
+        response["result"] = "true"
+        response["status_code"] = "200"
+        response["message"] = "성공!"
+        response["data"] = data
+
+
+    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
+
+
+
+
+
+@swagger_auto_schema(
+    method='POST',
+    operation_id='회원 레슨 추가',
+    operation_description=
+        '회원의 레슨을 추가합니다. >> https://www.figma.com/file/9A22UfWb1Kmt8gwr11u0I9/GUI?node-id=163%3A2516&t=Im3MqwNXHYe7aFjP-4',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+    ),
+    tags=['attention'],
+    responses={200: openapi.Response(
+        description="200 OK",
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'getTrainerInfo': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
+                'getMemberCount': openapi.Schema(type=openapi.TYPE_INTEGER, description="트레이너가 보유하고 있는 회원 수"),
+                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
             }
         )
     )}
@@ -203,157 +285,81 @@ def addLesson(request):
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 
 
-# 진행중인 레슨
-@swagger_auto_schema(
-    method='POST',
-    operation_id='진행중인 레슨 ?',
-    operation_description='수강생을 등록 합니다.',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-    ),
-    tags=['hypeboy'],
-    responses={200: openapi.Response(
-        description="200 OK",
-        schema=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'access_token': openapi.Schema(type=openapi.TYPE_STRING, description="Access Token"),
-                'refresh_token': openapi.Schema(type=openapi.TYPE_STRING, description="Refresh Token"),
-            }
-        )
-    )}
-)
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-@authentication_classes((JWTAuthentication,))
-def ingLesson(request):
 
-    today = DateFormat(datetime.now()).format('Ymd')
+# # 진행중인 레슨
+# @swagger_auto_schema(
+#     method='POST',
+#     operation_id='지금 레슨 ?',
+#     operation_description='수강생을 등록 합니다.',
+#     request_body=openapi.Schema(
+#         type=openapi.TYPE_OBJECT,
+#     ),
+#     tags=['hypeboy'],
+#     responses={200: openapi.Response(
+#         description="200 OK",
+#         schema=openapi.Schema(
+#             type=openapi.TYPE_OBJECT,
+#             properties={
+#                 'access_token': openapi.Schema(type=openapi.TYPE_STRING, description="Access Token"),
+#                 'refresh_token': openapi.Schema(type=openapi.TYPE_STRING, description="Refresh Token"),
+#             }
+#         )
+#     )}
+# )
+# @api_view(['POST'])
+# @permission_classes((IsAuthenticated, ))
+# @authentication_classes((JWTAuthentication,))
+# def nowLesson(request):
 
-    response = {}
-    data = {}
+#     today = DateFormat(datetime.now()).format('Ymd')
 
-    # 토큰으로 유저 email 가져오기
-    email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
+#     response = {}
+#     data = {}
 
-    # 유저 정보
-    user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
+#     # 토큰으로 유저 email 가져오기
+#     email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
 
-
-    if not user_info :
-
-        response["result"] = "true"
-        response["status_code"] = "800"
-        response["message"] = "유저 정보 없음"
-        response["data"] = []
-
-    else :
-        user_id = user_info[0]['fields']['user_id']
+#     # 유저 정보
+#     user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
 
 
-        today = DateFormat(datetime.now()).format('Ymd')
-        member = Member.objects.filter(id=user_id)
-        lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
+#     if not user_info :
 
-        member = json.loads(serializers.serialize('json', Member.objects.filter(id = user_id)))
-        lessons = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))))
+#         response["result"] = "true"
+#         response["status_code"] = "800"
+#         response["message"] = "유저 정보 없음"
+#         response["data"] = []
 
-        if not member :
-            data["member"] = []
-        else :
-            data["member"] = member[0]['fields']
-
-        if not lessons :
-            data["lessons"] = []
-        else :
-            data["lessons"] = lessons[0]['fields']
-
-        data["today"] = today
-
-        response["result"] = "true"
-        response["status_code"] = "200"
-        response["message"] = "성공!"
-        response["data"] = data
+#     else :
+#         user_id = user_info[0]['fields']['user_id']
 
 
-    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
+#         today = DateFormat(datetime.now()).format('Ymd')
+#         member = Member.objects.filter(id=user_id)
+#         lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
+
+#         member = json.loads(serializers.serialize('json', Member.objects.filter(id = user_id)))
+#         lessons = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).order_by('completion', '-id', '-create_date')))
+
+#         if not member :
+#             data["member"] = []
+#         else :
+#             data["member"] = member[0]['fields']
+
+#         if not lessons :
+#             data["lessons"] = []
+#         else :
+#             data["lessons"] = lessons[0]['fields']
+
+#         data["today"] = today
+
+#         response["result"] = "true"
+#         response["status_code"] = "200"
+#         response["message"] = "성공!"
+#         response["data"] = data
 
 
-
-# 진행중인 레슨
-@swagger_auto_schema(
-    method='POST',
-    operation_id='지금 레슨 ?',
-    operation_description='수강생을 등록 합니다.',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-    ),
-    tags=['hypeboy'],
-    responses={200: openapi.Response(
-        description="200 OK",
-        schema=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'access_token': openapi.Schema(type=openapi.TYPE_STRING, description="Access Token"),
-                'refresh_token': openapi.Schema(type=openapi.TYPE_STRING, description="Refresh Token"),
-            }
-        )
-    )}
-)
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-@authentication_classes((JWTAuthentication,))
-def nowLesson(request):
-
-    today = DateFormat(datetime.now()).format('Ymd')
-
-    response = {}
-    data = {}
-
-    # 토큰으로 유저 email 가져오기
-    email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
-
-    # 유저 정보
-    user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
-
-
-    if not user_info :
-
-        response["result"] = "true"
-        response["status_code"] = "800"
-        response["message"] = "유저 정보 없음"
-        response["data"] = []
-
-    else :
-        user_id = user_info[0]['fields']['user_id']
-
-
-        today = DateFormat(datetime.now()).format('Ymd')
-        member = Member.objects.filter(id=user_id)
-        lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
-
-        member = json.loads(serializers.serialize('json', Member.objects.filter(id = user_id)))
-        lessons = json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).order_by('completion', '-id', '-create_date')))
-
-        if not member :
-            data["member"] = []
-        else :
-            data["member"] = member[0]['fields']
-
-        if not lessons :
-            data["lessons"] = []
-        else :
-            data["lessons"] = lessons[0]['fields']
-
-        data["today"] = today
-
-        response["result"] = "true"
-        response["status_code"] = "200"
-        response["message"] = "성공!"
-        response["data"] = data
-
-
-    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
+#     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 
 
 

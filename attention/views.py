@@ -105,8 +105,6 @@ def getUser(token_str):
     return user
 
 ######################################################### 회원 목록 호출 START #########################################################
-### 첫 화면 회원 목록 호출
-## 트레이너 정보와 함께 트레이너가 가지고 있는 회원 정보 Return
 @swagger_auto_schema(
     method='POST',
     operation_id='회원 목록',
@@ -340,6 +338,7 @@ def selectMember(request):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
+            'user_name': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 이름"),
             'user_height': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 키"),
             'user_weight': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 몸무게"),
             'user_gender': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 성별"),
@@ -374,6 +373,11 @@ def editMember(request):
         response["status_code"] = "800"
         response["message"] = "유저 정보 없음"
         response["data"] = []
+    elif not request.data['user_name'] :
+        response["result"] = "true"
+        response["status_code"] = "801"
+        response["message"] = "user_name 값이 없습니다."
+        response["data"] = 0
     elif not request.data['user_height'] :
         response["result"] = "true"
         response["status_code"] = "802"
