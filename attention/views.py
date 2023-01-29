@@ -121,7 +121,7 @@ def getUser(token_str):
             properties={
                 'getTrainerInfo': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
                 'getMemberCount': openapi.Schema(type=openapi.TYPE_INTEGER, description="트레이너가 보유하고 있는 회원 수"),
-                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
+                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점, \n id : 회원 고유 키(운동 리스트에 사용)"),
             }
         )
     )}
@@ -153,10 +153,8 @@ def getMemberList(request):
 
         user_id = user_info[0]['fields']['user_id']
 
-        getTrainerInfo = json.loads(serializers.serialize('json', Member.objects.filter(user_id = user_id)))
-
+        getTrainerInfo = json.loads(serializers.serialize('json', Member.objects.filter(user_id=user_id)))
         setMemberList = json.loads(serializers.serialize('json', Member.objects.filter(trainer_group=user_id, user_type=2).order_by('-id')))
-
 
         if not getTrainerInfo :
             data["getTrainerInfo"] = []
@@ -170,16 +168,16 @@ def getMemberList(request):
             data["getMemberCount"] = 0
         else :
             for i in range(len(setMemberList)):
+                # pk 강제 삽입
+                setMemberList[i]['fields']['id'] = Member.objects.filter(trainer_group=user_id, user_type=2).values_list('id', flat=True).order_by('-id')[i]
                 getMemberList.append(setMemberList[i]['fields'])
-
+                
             data["getMemberList"] = getMemberList
 
-        
-
-        response["result"] = "true"
-        response["status_code"] = "200"
-        response["message"] = "success"
-        response["data"] = data
+            response["result"] = "true"
+            response["status_code"] = "200"
+            response["message"] = "success"
+            response["data"] = data
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원 목록 호출 END #########################################################
@@ -314,7 +312,7 @@ def selectMember(request):
     else :
         user_id = user_info[0]['fields']['user_id']
 
-        getMemberList = json.loads(serializers.serialize('json', Member.objects.filter(id = user_id)))
+        getMemberList = json.loads(serializers.serialize('json', Member.objects.filter(id=user_id)))
 
         if not getMemberList :
             data["getMemberList"] = []
