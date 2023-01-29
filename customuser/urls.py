@@ -18,7 +18,7 @@ urlpatterns = [
 # 스키마 뷰 셋팅
 schema_view = get_schema_view(
   openapi.Info(
-    title="fit note API 문서",
+    title="Fit Note API 문서",
     default_version='0.0.1',
     terms_of_service="https://www.google.com/policies/terms/",
   ),
@@ -33,9 +33,3 @@ urlpatterns += [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
-
-    # path(r'swagger(?P<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    # path(r'swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    # path(r'redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc-v1'),
-    # path('api/note/', include('notes.urls')),
-    # path('api/member/', include('members.urls')),

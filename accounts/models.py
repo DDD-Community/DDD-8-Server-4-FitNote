@@ -17,7 +17,8 @@ class User(AbstractUser):
 
     spouse_name = models.CharField(blank=True, max_length=100)
     date_of_birth = models.DateField(blank=True, null=True)
-    fullname = models.CharField(null=True, max_length=14)
+
+    fullname = models.CharField(null=True, max_length=14) # 멤버 테이블에 사용 될 실제 이름
 
     def __str__(self):
         return self.email

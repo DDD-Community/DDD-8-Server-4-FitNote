@@ -39,8 +39,6 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-
-
 ALLOWED_HOSTS = ['*']
 
 if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is True : 
@@ -137,8 +135,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'members',
-    'notes',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
