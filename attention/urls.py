@@ -16,6 +16,12 @@ urlpatterns = [
     path('add2/<int:user_id>', views.add2, name='add2'),
     path('edit/<int:user_id>', views.edit, name='edit'),
     path('delete/<int:trainer_id>', views.delete, name='delete'),
+
+    # Json Return
     path('list/', views.getMemberList, name='getMemberList'),
     path('add/', views.addMember, name='addMember'),
+    path('info/', views.selectMember, name='selectMember'),
+    path('edit/', views.editMember, name='editMember'),
+    path('delete/', views.deleteMember, name='deleteMember'),
+    
 ]
