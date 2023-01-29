@@ -105,6 +105,8 @@ def getUser(token_str):
     return user
 
 ######################################################### 회원 목록 호출 START #########################################################
+### 첫 화면 회원 목록 호출
+## 트레이너 정보와 함께 트레이너가 가지고 있는 회원 정보 Return
 @swagger_auto_schema(
     method='POST',
     operation_id='회원 목록',
@@ -114,29 +116,17 @@ def getUser(token_str):
         type=openapi.TYPE_OBJECT,
     ),
     tags=['attention'],
-    responses={
-        200: openapi.Response(
+    responses={200: openapi.Response(
         description="200 OK",
         schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
-                }
-            )
-        ),
-        800: openapi.Response(
-        description="800 OK",
-        schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'result': openapi.Schema(type=openapi.TYPE_STRING, description="true"),
-                    'status_code': openapi.Schema(type=openapi.TYPE_STRING, description="800"),
-                    'message': openapi.Schema(type=openapi.TYPE_STRING, description="해당하는 토큰의 유저 정보가 올바르지 않습니다."),
-                    'data': openapi.Schema(type=openapi.TYPE_STRING, description=""),
-                }
-            )
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'getTrainerInfo': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
+                'getMemberCount': openapi.Schema(type=openapi.TYPE_INTEGER, description="트레이너가 보유하고 있는 회원 수"),
+                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
+            }
         )
-    }
+    )}
 )
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -186,6 +176,8 @@ def getMemberList(request):
 
             data["getMemberList"] = getMemberList
 
+        
+
         response["result"] = "true"
         response["status_code"] = "200"
         response["message"] = "success"
@@ -210,29 +202,15 @@ def getMemberList(request):
         }
     ),
     tags=['attention'],
-    responses={
-        200: openapi.Response(
+    responses={200: openapi.Response(
         description="200 OK",
         schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
-                }
-            )
-        ),
-        800: openapi.Response(
-        description="800 OK",
-        schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'result': openapi.Schema(type=openapi.TYPE_STRING, description="true"),
-                    'status_code': openapi.Schema(type=openapi.TYPE_STRING, description="800"),
-                    'message': openapi.Schema(type=openapi.TYPE_STRING, description="해당하는 토큰의 유저 정보가 올바르지 않습니다."),
-                    'data': openapi.Schema(type=openapi.TYPE_STRING, description=""),
-                }
-            )
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
+            }
         )
-    }
+    )}
 )
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -303,29 +281,15 @@ def addMember(request):
         type=openapi.TYPE_OBJECT,
     ),
     tags=['attention'],
-    responses={
-        200: openapi.Response(
+    responses={200: openapi.Response(
         description="200 OK",
         schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
-                }
-            )
-        ),
-        800: openapi.Response(
-        description="800 OK",
-        schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'result': openapi.Schema(type=openapi.TYPE_STRING, description="true"),
-                    'status_code': openapi.Schema(type=openapi.TYPE_STRING, description="800"),
-                    'message': openapi.Schema(type=openapi.TYPE_STRING, description="해당하는 토큰의 유저 정보가 올바르지 않습니다."),
-                    'data': openapi.Schema(type=openapi.TYPE_STRING, description=""),
-                }
-            )
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
+            }
         )
-    }
+    )}
 )
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -382,29 +346,15 @@ def selectMember(request):
         }
     ),
     tags=['attention'],
-    responses={
-        200: openapi.Response(
+    responses={200: openapi.Response(
         description="200 OK",
         schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
-                }
-            )
-        ),
-        800: openapi.Response(
-        description="800 OK",
-        schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'result': openapi.Schema(type=openapi.TYPE_STRING, description="true"),
-                    'status_code': openapi.Schema(type=openapi.TYPE_STRING, description="800"),
-                    'message': openapi.Schema(type=openapi.TYPE_STRING, description="해당하는 토큰의 유저 정보가 올바르지 않습니다."),
-                    'data': openapi.Schema(type=openapi.TYPE_STRING, description=""),
-                }
-            )
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
+            }
         )
-    }
+    )}
 )
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated, ))
@@ -469,29 +419,15 @@ def editMember(request):
         type=openapi.TYPE_OBJECT,
     ),
     tags=['attention'],
-    responses={
-        200: openapi.Response(
+    responses={200: openapi.Response(
         description="200 OK",
         schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
-                }
-            )
-        ),
-        800: openapi.Response(
-        description="800 OK",
-        schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'result': openapi.Schema(type=openapi.TYPE_STRING, description="true"),
-                    'status_code': openapi.Schema(type=openapi.TYPE_STRING, description="800"),
-                    'message': openapi.Schema(type=openapi.TYPE_STRING, description="해당하는 토큰의 유저 정보가 올바르지 않습니다."),
-                    'data': openapi.Schema(type=openapi.TYPE_STRING, description=""),
-                }
-            )
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 8xx: 실패"),
+            }
         )
-    }
+    )}
 )
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated, ))
@@ -525,4 +461,3 @@ def deleteMember(request):
         response["data"] = 1
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
-######################################################### 트레이너 회원 탈퇴 END #########################################################
