@@ -148,7 +148,7 @@ def schedule(request):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'id': openapi.Schema(type=openapi.TYPE_STRING, description="회원 키"),
+            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 키(user_id)"),
         }
     ),
     tags=['hypeboy'],
@@ -200,7 +200,7 @@ def ingLesson(request):
 
             data["getMemberInfo"] = getMemberInfo[0]['fields']
 
-            lessons_list = Lesson.objects.filter(user_id=request.data['id']).values('start_date').annotate(entries=Count('start_date'))
+            lessons_list = Lesson.objects.filter(user_id=request.data['id'], total_completion=0).values('start_date').annotate(entries=Count('start_date'))
 
             if not lessons_list :
                 data["lessons_list"] = []
@@ -407,7 +407,7 @@ def deleteLesson(request):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'id': openapi.Schema(type=openapi.TYPE_STRING, description="회원 키"),
+            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 키(user_id)"),
         }
     ),
     tags=['hypeboy'],
@@ -459,7 +459,7 @@ def endLesson(request):
 
             data["getMemberInfo"] = getMemberInfo[0]['fields']
 
-            lessons_list = Lesson.objects.filter(user_id=request.data['id']).values('start_date').annotate(entries=Count('start_date'))
+            lessons_list = Lesson.objects.filter(user_id=request.data['id'], total_completion=1).values('start_date').annotate(entries=Count('start_date'))
 
             if not lessons_list :
                 data["lessons_list"] = []
