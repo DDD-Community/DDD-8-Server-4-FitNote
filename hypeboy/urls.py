@@ -16,5 +16,5 @@ urlpatterns = [
     path('add/', views.addLesson, name='addLesson'),
     path('ing/', views.ingLesson, name='ingLesson'),
     path('delete/', views.deleteLesson, name='deleteLesson'),
-    path('sucLesson/', views.sucLesson, name='sucLesson'),
+    path('end/', views.endLesson, name='endLesson'),
 ]
