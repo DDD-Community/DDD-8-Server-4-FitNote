@@ -206,16 +206,27 @@ def ingLesson(request):
                 data["lessons_list"] = []
                 data["exercise_list"] = []
             else :
-                data["lessons_list"] = lessons_list[0]
                 
-                lessons_list_name = []
-                setLessonName = []
 
-                for i in range(0, int(lessons_list[0]["entries"])) :
-                    setLessonName = Lesson.objects.filter(user_id=request.data['id'], start_date=lessons_list[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
-                    lessons_list_name.append(setLessonName[i]['name'])
+                data['lessons'] = []
 
-                data["lessons_list"]["lessons_list_name"] = lessons_list_name
+                setName = []
+                for i in range(0, int(len(lessons_list))) :
+
+                    date = lessons_list[i]['start_date']
+                
+                    name = list(Lesson.objects.filter(user_id=request.data['id'], start_date=lessons_list[i]['start_date'], view_yn=1).values('name').annotate(entries=Count('name')))
+
+                    for j in range(0, int(len(name))):
+                        setName.append(name[j]['name'])
+
+                    data['lessons'].append({
+                        "lessons_date": date,
+                        "lessons_name": setName,
+                    })
+
+                    setName = []
+
 
                 response["result"] = "true"
                 response["status_code"] = "200"
