@@ -11,6 +11,8 @@ urlpatterns = [
     path('lessonNow/<int:user_id>/<int:today>', views.lessonNow, name='lessonNow'),
     path('lessonEnd/', views.lessonEnd, name='lessonEnd'),
 
+    path('share/<int:user_id>/<int:today>', views.share, name='share'),
+
     # Json Return
     path('add/', views.addLesson, name='addLesson'),
     path('ing/', views.ingLesson, name='ingLesson'),
