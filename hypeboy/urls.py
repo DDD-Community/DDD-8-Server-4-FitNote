@@ -12,9 +12,11 @@ urlpatterns = [
     path('lessonEnd/', views.lessonEnd, name='lessonEnd'),
 
     # Json Return
-    path('schedule/', views.schedule, name='schedule'),
     path('add/', views.addLesson, name='addLesson'),
     path('ing/', views.ingLesson, name='ingLesson'),
     path('delete/', views.deleteLesson, name='deleteLesson'),
     path('end/', views.endLesson, name='endLesson'),
+    path('info/', views.getLesson, name='getLesson'),
+    path('complet/', views.completionLesson, name='completionLesson'),
+    
 ]
