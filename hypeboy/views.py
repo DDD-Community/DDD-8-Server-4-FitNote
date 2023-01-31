@@ -690,3 +690,30 @@ def completionLesson(request):
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 수업 완료 END #########################################################
+
+# Create your views here.
+def share(request, user_id, today):
+
+    lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1)
+
+    trainer_id = Member.objects.filter(id=user_id).values_list('trainer_group', flat=True)[0]
+
+    trainer_name = Member.objects.filter(id=trainer_id).values_list('user_name', flat=True)[0]
+    user_name = Member.objects.filter(id=user_id).values_list('user_name', flat=True)[0]
+
+    today = str(today)
+
+    year = today[0:4]
+    month = today[4:6]
+    date = today[6:8]
+
+    context = {
+        'lessons': lessons
+        , 'trainer_name' : trainer_name
+        , 'user_name' : user_name
+        , 'year' : year
+        , 'month' : month
+        , 'date' : date
+    }
+
+    return render(request, 'share.html', context=context)
