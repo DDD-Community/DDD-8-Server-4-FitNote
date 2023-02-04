@@ -312,7 +312,7 @@ def selectMember(request):
     else :
         user_id = user_info[0]['fields']['user_id']
 
-        getMemberList = json.loads(serializers.serialize('json', Member.objects.filter(id=user_id)))
+        getMemberList = json.loads(serializers.serialize('json', Member.objects.filter(user_id=user_id)))
 
         if not getMemberList :
             data["getMemberList"] = []
