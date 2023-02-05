@@ -23,121 +23,32 @@ try:
 except ImportError:
     import json
 
-# Create your views here.
-def hypeboy(request):
-    return render(request, 'hypeboy.html')
+# 공유하기 페이지
+def share(request, user_id, today):
 
-def lessonAdd(request, user_id):
-    today = DateFormat(datetime.now()).format('Ymd')
-    member = Member.objects.filter(id=user_id)
-    return render(request, 'lessonAdd.html', {'member' : member[0], 'today' : today})
+    lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1)
 
-def lessonIng(request, user_id):
-    today = DateFormat(datetime.now()).format('Ymd')
-    member = Member.objects.filter(id=user_id)
-    lessons = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
+    trainer_id = Member.objects.filter(id=user_id).values_list('trainer_group', flat=True)[0]
 
-    if lessons :
-        lessons_name_list = Lesson.objects.filter(user_id=user_id, start_date=lessons[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
-    else :
-        lessons_name_list = []
-        
-    return render(request, 'lessonIng.html', {'member': member[0], 'lessons' : lessons, 'today' : today, 'lessons_name_list' : lessons_name_list})
+    trainer_name = Member.objects.filter(id=trainer_id).values_list('user_name', flat=True)[0]
+    user_name = Member.objects.filter(id=user_id).values_list('user_name', flat=True)[0]
 
-def lessonNow(request, user_id, today):
-    member = Member.objects.filter(id=user_id)
-    lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).order_by('completion', '-id', '-create_date')
-    return render(request, 'lessonNow.html', {'lessons': lessons, 'user_id' : user_id, 'member' : member[0]})
+    today = str(today)
 
-def lessonEnd(request):
-    return render(request, 'lessonEnd.html')
+    year = today[0:4]
+    month = today[4:6]
+    date = today[6:8]
 
-# 레슨 추가
-def add(request, user_id, today):
+    context = {
+        'lessons': lessons
+        , 'trainer_name' : trainer_name
+        , 'user_name' : user_name
+        , 'year' : year
+        , 'month' : month
+        , 'date' : date
+    }
 
-    for i in range(1, int(request.GET['set'])+1) :
-        lesson = Lesson()
-        lesson.user_id = user_id
-        lesson.name = request.GET['name']
-        lesson.weight = request.GET['weight']
-        lesson.count = request.GET['count']
-        lesson.set = i
-        lesson.start_date = today
-        lesson.create_date = timezone.datetime.now()
-        lesson.save()
-
-    return redirect('lessonIng', user_id=user_id)
-
-# 운동 미노출 처리
-def delete(request, user_id, lesson_id):
-
-    today = DateFormat(datetime.now()).format('Ymd')
-
-    lessons = Lesson.objects.get(id=lesson_id)
-    lessons.view_yn = 0
-    lessons.save()
-    
-    return redirect('lessonNow', user_id=user_id, today=today)
-
-# 운동 완료 처리
-def completion(request, user_id, lesson_id):
-
-    today = DateFormat(datetime.now()).format('Ymd')
-
-    lessons = Lesson.objects.get(id=lesson_id)
-
-    lessons.completion = 1
-    lessons.save()
-    
-    return redirect('lessonNow', user_id=user_id, today=today)
-
-
-def schedule(request):
-
-    response = {}
-    data = {}
-
-    # 토큰으로 유저 email 가져오기
-    email = getUser(request.META['HTTP_AUTHORIZATION'][7:])
-
-    # 유저 정보
-    user_info = json.loads(serializers.serialize('json', Member.objects.filter(user_email=email)))
-
-    if not user_info :
-        response["result"] = "true"
-        response["status_code"] = "800"
-        response["message"] = "유저 정보 없음"
-        response["data"] = []
-
-    else :
-
-        user_id = user_info[0]['fields']['user_id']
-
-        lessons_list = Lesson.objects.filter(user_id=user_id).values('start_date').annotate(entries=Count('start_date'))
-
-        print(lessons_list)
-
-        data["user_info"] = user_info[0]['fields']
-
-        if not lessons_list :
-            data["lessons_list"] = []
-            data["exercise_list"] = []
-        else :
-            data["lessons_list"] = lessons_list[0]
-            exercise_list = Lesson.objects.filter(user_id=user_info[0]['fields']['user_id'], start_date=lessons_list[0]['start_date'], view_yn=1).values('name').annotate(entries=Count('name'))
-
-            if not exercise_list :
-                data["exercise_list"] = []
-            else :
-                data["exercise_list"] = exercise_list
-
-            response["result"] = "true"
-            response["status_code"] = "200"
-            response["message"] = "success"
-            response["data"] = data
-
-    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
-
+    return render(request, 'share.html', context=context)
 
 ######################################################### 회원의 예정된 수업 START #########################################################
 @swagger_auto_schema(
@@ -694,30 +605,3 @@ def completionLesson(request):
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 수업 완료 END #########################################################
-
-# Create your views here.
-def share(request, user_id, today):
-
-    lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1)
-
-    trainer_id = Member.objects.filter(id=user_id).values_list('trainer_group', flat=True)[0]
-
-    trainer_name = Member.objects.filter(id=trainer_id).values_list('user_name', flat=True)[0]
-    user_name = Member.objects.filter(id=user_id).values_list('user_name', flat=True)[0]
-
-    today = str(today)
-
-    year = today[0:4]
-    month = today[4:6]
-    date = today[6:8]
-
-    context = {
-        'lessons': lessons
-        , 'trainer_name' : trainer_name
-        , 'user_name' : user_name
-        , 'year' : year
-        , 'month' : month
-        , 'date' : date
-    }
-
-    return render(request, 'share.html', context=context)
