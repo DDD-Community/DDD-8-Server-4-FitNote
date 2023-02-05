@@ -245,6 +245,7 @@ def ingLesson(request):
         type=openapi.TYPE_OBJECT,
         properties={
             'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 키(user_id)"),
+            'today': openapi.Schema(type=openapi.TYPE_STRING, description="운동 날짜 YYYYMMDD ex)20220101"),
             'set': openapi.Schema(type=openapi.TYPE_INTEGER, description="운동 세트"),
             'name': openapi.Schema(type=openapi.TYPE_INTEGER, description="운동 이름"),
             'weight': openapi.Schema(type=openapi.TYPE_INTEGER, description="운둥 중량"),
@@ -266,8 +267,6 @@ def ingLesson(request):
 @permission_classes((IsAuthenticated, ))
 @authentication_classes((JWTAuthentication,))
 def addLesson(request):
-
-    today = DateFormat(datetime.now()).format('Ymd')
 
     response = {}
 
@@ -299,19 +298,24 @@ def addLesson(request):
                 response["status_code"] = "801"
                 response["message"] = "set 값이 없습니다."
                 response["data"] = 0
-            elif not request.data['name'] :
+            elif not request.data['today'] :
                 response["result"] = "true"
                 response["status_code"] = "802"
+                response["message"] = "today 값이 없습니다."
+                response["data"] = 0
+            elif not request.data['name'] :
+                response["result"] = "true"
+                response["status_code"] = "803"
                 response["message"] = "name 값이 없습니다."
                 response["data"] = 0
             elif not request.data['weight'] :
                 response["result"] = "true"
-                response["status_code"] = "803"
+                response["status_code"] = "804"
                 response["message"] = "weight 값이 없습니다."
                 response["data"] = 0
             elif not request.data['count'] :
                 response["result"] = "true"
-                response["status_code"] = "804"
+                response["status_code"] = "805"
                 response["message"] = "count 값이 없습니다."
                 response["data"] = 0
             else :
@@ -322,7 +326,7 @@ def addLesson(request):
                     lesson.weight = request.data['weight']
                     lesson.count = request.data['count']
                     lesson.set = i
-                    lesson.start_date = today
+                    lesson.start_date = request.data['today']
                     lesson.create_date = timezone.datetime.now()
                     lesson.save()
 

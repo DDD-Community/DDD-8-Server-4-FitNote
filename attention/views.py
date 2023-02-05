@@ -174,10 +174,10 @@ def getMemberList(request):
                 
             data["getMemberList"] = getMemberList
 
-            response["result"] = "true"
-            response["status_code"] = "200"
-            response["message"] = "success"
-            response["data"] = data
+        response["result"] = "true"
+        response["status_code"] = "200"
+        response["message"] = "success"
+        response["data"] = data
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원 목록 호출 END #########################################################
