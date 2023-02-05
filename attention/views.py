@@ -37,68 +37,6 @@ def jwt_signup(id, fullname, email):
 
     return 1
 
-def memberList(request, user_id):
-    today = DateFormat(datetime.now()).format('Ymd')
-    trainer = Member.objects.filter(user_id = user_id)
-    members = Member.objects.filter(trainer_group=user_id, user_type=2).order_by('-id')
-    member_count = members.count()
-    return render(request, 'memberList.html', {'members' : members, 'trainer' : trainer[0], 'member_count' : member_count, 'today' : today})
-
-def memberAdd(request, user_id):
-    return render(request, 'memberAdd.html', {'user_id':user_id})
-
-
-# 멤버 추가
-def add2(request, user_id):
-
-    member = Member()
-    member.user_name = request.POST['user_name']
-    member.user_type = 2
-    member.trainer_group = user_id
-    member.user_height = request.POST['user_height']
-    member.user_weight = request.POST['user_weight']
-    member.user_gender = request.POST['user_gender']
-    member.create_date = timezone.datetime.now()
-    member.save()
-
-    return redirect('memberList', user_id=user_id)
-
-def memberInfo(request, member_id):
-    member = Member.objects.filter(id=member_id)
-    return render(request, 'memberInfo.html', {'member' : member[0]})
-
-def memberEdit(request, user_id):
-    member = Member.objects.filter(id=user_id)
-    return render(request, 'memberEdit.html', {'user_id':user_id, 'member':member[0]})
-
-
-def memberSetting(request, trainer_id):
-    member = Member.objects.filter(user_id=trainer_id)
-    return render(request, 'memberSetting.html', {'member' : member[0]})
-
-# 레슨 추가
-def edit(request, user_id):
-
-    member = Member.objects.get(id=user_id)
-    member.user_name = request.POST['user_name']
-    member.user_height = request.POST['user_height']
-    member.user_weight = request.POST['user_weight']
-    member.user_gender = request.POST['user_gender']
-    member.update_date = timezone.datetime.now()
-    member.save()
-
-    return redirect('memberInfo', member_id=user_id)
-
-# 탈퇴 추가
-def delete(request, trainer_id):
-
-    member = Member.objects.get(id=trainer_id)
-    member.user_status = 2
-    member.update_date = timezone.datetime.now()
-    member.save()
-
-    return render(request, 'index.html')
-
 def getUser(token_str):
     access_token = AccessToken(token_str)
     user = User.objects.get(id=access_token['user_id'])

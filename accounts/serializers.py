@@ -3,8 +3,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 
 
 class CustomRegisterSerializer(RegisterSerializer):
-    # 기본 설정 필드: username, password, email
-    # 추가 설정 필드: profile_image
+
     fullname = serializers.CharField()
 
     def get_cleaned_data(self):
