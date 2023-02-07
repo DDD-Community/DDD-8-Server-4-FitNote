@@ -1,0 +1,9 @@
+2023-02-07 23:47:04,845 [WARNING] django.server: "POST /attention/list/1 HTTP/1.1" 404 179
+2023-02-07 23:47:04,845 [WARNING] django.server: "POST /attention/list/1 HTTP/1.1" 404 179
+2023-02-07 23:47:04,845 [WARNING] django.server: "POST /attention/list/1 HTTP/1.1" 404 179
+2023-02-07 23:47:12,378 [INFO] django.server: "POST /attention/list/ HTTP/1.1" 200 1796
+2023-02-07 23:47:12,378 [INFO] django.server: "POST /attention/list/ HTTP/1.1" 200 1796
+2023-02-07 23:47:12,378 [INFO] django.server: "POST /attention/list/ HTTP/1.1" 200 1796
+2023-02-07 23:47:14,790 [WARNING] django.server: "POST /attention/list/1 HTTP/1.1" 404 179
+2023-02-07 23:47:14,790 [WARNING] django.server: "POST /attention/list/1 HTTP/1.1" 404 179
+2023-02-07 23:47:14,790 [WARNING] django.server: "POST /attention/list/1 HTTP/1.1" 404 179

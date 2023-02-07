@@ -339,6 +339,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'customuser.exceptions.api_exception.custom_exception_handler'
 }
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
