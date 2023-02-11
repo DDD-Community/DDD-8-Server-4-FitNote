@@ -27,8 +27,6 @@
 
   <main class="form-signin w-100 m-auto">
 
-    <div class="fixed-top justify-content-center mt-5">수업 레포트 공유하기</div>
-
     <div class="card bg-body-tertiary">
       <div class="card-body d-flex flex-column align-items-start">
         <div class="card-title" style="font-size: 14px;">{{year}}년 {{month}}월 {{date}}일</div>
@@ -73,7 +71,7 @@
       <div><a style="font-size: 12px;">트레이너 {{trainer_name}}</a></div>
     </div>
 
-    <button class="w-100 btn btn-lg btn-primary" style="font-size: 12px;" type="button">공유하기</button>
+    <button class="w-100 btn btn-lg btn-primary" style="font-size: 12px;" type="button" id="btnShare">공유하기</button>
 
     <div class="fixed-bottom mb-5">&copy; FitNote</div>
   </main>
@@ -85,5 +83,36 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
 <script src="{% static 'css/dashboard.js' %}"></script>
+
+<script type="text/javascript">
+
+var btnShare = document.getElementById("btnShare");
+
+btnShare.addEventListener("click", function(){
+
+  var shareTitle = "Fit Note 운동 일지";
+  var shareText = "운동 일지";
+  var contentURL = "/hypeboy/share/3/20230211"
+  var URLPreFix = "";
+
+  URLPreFix = URLPreFix + "//" + location.host;
+
+  var shareURL = URLPreFix + contentURL;
+
+  if (navigator.share) {
+    navigator.share({
+      title : shareTitle
+      , text : shareText
+      , url : shareURL
+    })
+    .then(() => console.log('공유 성공'))
+    .catch((error) => console.log('공유 실패', error))
+  } else {
+    alert("공유하기를 지원하지 않는 환경입니다.")
+  }
+
+});
+
+</script>
 
 </html>
