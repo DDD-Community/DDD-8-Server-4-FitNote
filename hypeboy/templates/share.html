@@ -71,6 +71,8 @@
       <div><a style="font-size: 12px;">트레이너 {{trainer_name}}</a></div>
     </div>
 
+    <input type='text' id='input_text' style='position:absolute; left:-9999px' value="http://52.79.105.64/hypeboy/share/3/20230211">
+
     <button class="w-100 btn btn-lg btn-primary" style="font-size: 12px;" type="button" id="btnShare">공유하기</button>
 
     <div class="fixed-bottom mb-5">&copy; FitNote</div>
@@ -108,7 +110,10 @@ btnShare.addEventListener("click", function(){
     .then(() => console.log('공유 성공'))
     .catch((error) => console.log('공유 실패', error))
   } else {
-    alert("공유하기를 지원하지 않는 환경입니다.")
+    const input_text = document.getElementById("input_text");
+    input_text.select();
+    document.execCommand('copy');
+    alert("클립보드에 복사되었습니다.")
   }
 
 });
