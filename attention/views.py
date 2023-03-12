@@ -388,7 +388,7 @@ def deleteMember(request):
         response["message"] = "유저 정보 없음"
         response["data"] = []
     else :
-        trainer_id = user_info[0]['fields']['trainer_id']
+        trainer_id = user_info[0]['pk']
 
         member = Member.objects.get(id=trainer_id)
         member.user_status = 2
