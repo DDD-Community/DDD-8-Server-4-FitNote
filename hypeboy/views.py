@@ -322,6 +322,84 @@ def deleteLesson(request):
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 예정된 수업 종료 END #########################################################
 
+######################################################### 회원의 예정된 수업 Update START #########################################################
+@swagger_auto_schema(
+    method='POST',
+    operation_id='회원 수업 추가',
+    operation_description=
+        '회원의 수업을 수정합니다.',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'lesson_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="레슨 id"),
+        }
+    ),
+    tags=['hypeboy'],
+    responses={200: openapi.Response(
+        description="200 OK",
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'data': openapi.Schema(type=openapi.TYPE_INTEGER, description="1: 성공, 7xx: 실패"),
+            }
+        )
+    )}
+)
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes((JWTAuthentication,))
+def updateLesson(request):
+
+    today = DateFormat(datetime.now()).format('Ymd')
+
+    response = {}
+
+    if not request.data :
+        response["result"] = "true"
+        response["status_code"] = "801"
+        response["message"] = "id 값이 없습니다."
+        response["data"] = []
+
+        return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
+
+    getMemberInfo = json.loads(serializers.serialize('json', Member.objects.filter(id=request.data['id'])))
+
+    if not getMemberInfo :
+        response["result"] = "true"
+        response["status_code"] = "800"
+        response["message"] = "유저 정보 없음"
+        response["data"] = []
+    else :
+        if getMemberInfo[0]['fields']['user_type'] == 1 :
+
+            response["result"] = "true"
+            response["status_code"] = "700"
+            response["message"] = "트레이너 회원 입니다."
+            response["data"] = []
+        else :
+            if not request.data["set"] :
+                response["result"] = "true"
+                response["status_code"] = "801"
+                response["message"] = "set 값이 없습니다."
+                response["data"] = 0
+            else :
+                lesson = Lesson.objects.get(id=request.data["lesson_id"])
+                lesson.user_id = request.data['id']
+                lesson.name = request.data['name']
+                lesson.weight = request.data['weight']
+                lesson.count = request.data['count']
+                lesson.start_date = request.data['today']
+                lesson.create_date = timezone.datetime.now()
+                lesson.save()
+                
+                response["result"] = "true"
+                response["status_code"] = "200"
+                response["message"] = "success"
+                response["data"] = 1
+
+    return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
+######################################################### 회원의 예정된 수업 Update END #########################################################
+
 ######################################################### 회원의 종료된 수업 START #########################################################
 @swagger_auto_schema(
     method='POST',
