@@ -6,6 +6,7 @@ urlpatterns = [
     path('add/', views.addLesson, name='addLesson'),
     path('ing/', views.ingLesson, name='ingLesson'),
     path('delete/', views.deleteLesson, name='deleteLesson'),
+    path('update/', views.updateLesson, name='updateLesson'),
     path('end/', views.endLesson, name='endLesson'),
     path('info/', views.getLesson, name='getLesson'),
     path('complet/', views.completionLesson, name='completionLesson'),
