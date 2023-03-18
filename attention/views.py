@@ -374,7 +374,7 @@ def deleteMember(request):
         member.update_date = timezone.datetime.now()
         member.save()
 
-        user = UserModel.objects.get(id=trainer_id)
+        user = UserModel.objects.get(id=member.user_id)
         user.delete()
 
         response["result"] = "true"
