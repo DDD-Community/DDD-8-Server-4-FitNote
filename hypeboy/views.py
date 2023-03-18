@@ -563,35 +563,27 @@ def getLesson(request):
 
             data["getMemberInfo"] = getMemberInfo[0]['fields']
 
-            lessons_list = list(json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=request.data['id'], start_date=request.data["today"], view_yn=1, completion=0))))
+            lessons_list = list(json.loads(serializers.serialize('json', Lesson.objects.filter(user_id=request.data['id'], start_date=request.data["today"], view_yn=1))))
 
-            if not lessons_list :
-                response["result"] = "true"
-                response["status_code"] = "701"
-                response["message"] = "완료된 운동입니다."
-                response["data"] = []
+            # data['getLessonInfo'] = getLessonInfo[0]['fields']
+            data["getLessonInfo"] = []
+            name = []
+            for i in range(0, int(len(lessons_list))) :
 
-            else :
+                # # pk 강제 삽입
+                lessons_json = lessons_list[i]['fields']
+                lessons_json['lesson_id'] = lessons_list[i]['pk']
 
-                # data['getLessonInfo'] = getLessonInfo[0]['fields']
-                data["getLessonInfo"] = []
+                name.append(lessons_json)
+                
+                data['getLessonInfo'].append(name)
+
                 name = []
-                for i in range(0, int(len(lessons_list))) :
 
-                    # # pk 강제 삽입
-                    lessons_json = lessons_list[i]['fields']
-                    lessons_json['lesson_id'] = lessons_list[i]['pk']
-
-                    name.append(lessons_json)
-                    
-                    data['getLessonInfo'].append(name)
-
-                    name = []
-
-                response["result"] = "true"
-                response["status_code"] = "200"
-                response["message"] = "success"
-                response["data"] = data
+            response["result"] = "true"
+            response["status_code"] = "200"
+            response["message"] = "success"
+            response["data"] = data
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 수업 상세 END #########################################################
