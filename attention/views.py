@@ -210,7 +210,7 @@ def addMember(request):
         schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점"),
+                'getMemberList': openapi.Schema(type=openapi.TYPE_OBJECT, description="user_id : 회원 고유 키, \n user_name : 회원 이름, \n user_email : 회원 이메일, \n user_type : 회원 타입 (1: 트레이너, 2: 일반 회원), \n trainer_group : 트레이너 고유 키(트레이너의 회원), \n user_height : 회원 키, \n user_weight : 회원 몸무게, \n user_status : 회원 상태 (1: 활성, 2: 탈퇴), \n user_view : 회원 노출 상태 (1: 노출, 2: 미노출), \n user_gender : 회원 성별 (1: 남성, 2: 여성), \n create_date : 데이터 생성 시점, \n update_date : 데이터 수정 시점, id : 추가 된 회원의 pk"),
             }
         )
     )}
@@ -264,6 +264,7 @@ def selectMember(request):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
+            'user_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 Id"),
             'user_name': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 이름"),
             'user_height': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 키"),
             'user_weight': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 몸무게"),
@@ -310,9 +311,7 @@ def editMember(request):
         response["message"] = "user_gender 값이 없습니다."
         response["data"] = 0
     else :
-        user_id = user_info[0]['fields']['user_id']
-
-        member = member = Member.objects.get(id=user_id)
+        member = member = Member.objects.get(id=request.data['id'])
 
         member.user_name = request.data['user_name']
         member.user_height = request.data['user_height']
