@@ -314,16 +314,6 @@ def editMember(request):
         response["status_code"] = "801"
         response["message"] = "user_name 값이 없습니다."
         response["data"] = 0
-    elif not request.data['user_height'] :
-        response["result"] = "true"
-        response["status_code"] = "802"
-        response["message"] = "user_height 값이 없습니다."
-        response["data"] = 0
-    elif not request.data['user_weight'] :
-        response["result"] = "true"
-        response["status_code"] = "803"
-        response["message"] = "user_weight 값이 없습니다."
-        response["data"] = 0
     elif not request.data['user_gender'] :
         response["result"] = "true"
         response["status_code"] = "804"
