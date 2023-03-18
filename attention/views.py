@@ -311,7 +311,7 @@ def editMember(request):
         response["message"] = "user_gender 값이 없습니다."
         response["data"] = 0
     else :
-        member = member = Member.objects.get(id=request.data['id'])
+        member = Member.objects.get(id=request.data['user_id'])
 
         member.user_name = request.data['user_name']
         member.user_height = request.data['user_height']
