@@ -158,8 +158,8 @@ def ingLesson(request):
             'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="회원 키(user_id)"),
             'today': openapi.Schema(type=openapi.TYPE_STRING, description="운동 날짜 YYYYMMDD ex)20220101"),
             'set': openapi.Schema(type=openapi.TYPE_INTEGER, description="운동 세트"),
-            'name': openapi.Schema(type=openapi.TYPE_INTEGER, description="운동 이름"),
-            'weight': openapi.Schema(type=openapi.TYPE_INTEGER, description="운둥 중량"),
+            'name': openapi.Schema(type=openapi.TYPE_STRING, description="운동 이름"),
+            'weight': openapi.Schema(type=openapi.TYPE_STRING, description="운둥 중량"),
             'count': openapi.Schema(type=openapi.TYPE_INTEGER, description="운동 횟수"),
         }
     ),
