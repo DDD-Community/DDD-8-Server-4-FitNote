@@ -230,16 +230,15 @@ def addLesson(request):
                 response["message"] = "count 값이 없습니다."
                 response["data"] = 0
             else :
-                for i in range(1, int(request.data['set'])+1) :
-                    lesson = Lesson()
-                    lesson.user_id = request.data['id']
-                    lesson.name = request.data['name']
-                    lesson.weight = request.data['weight']
-                    lesson.count = request.data['count']
-                    lesson.set = i
-                    lesson.start_date = request.data['today']
-                    lesson.create_date = timezone.datetime.now()
-                    lesson.save()
+                lesson = Lesson()
+                lesson.user_id = request.data['id']
+                lesson.name = request.data['name']
+                lesson.weight = request.data['weight']
+                lesson.count = request.data['count']
+                lesson.set = request.data['set']
+                lesson.start_date = request.data['today']
+                lesson.create_date = timezone.datetime.now()
+                lesson.save()
 
                 response["result"] = "true"
                 response["status_code"] = "200"
