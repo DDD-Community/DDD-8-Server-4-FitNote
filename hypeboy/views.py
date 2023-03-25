@@ -303,20 +303,14 @@ def deleteLesson(request):
             response["message"] = "트레이너 회원 입니다."
             response["data"] = []
         else :
-            if not request.data["set"] :
-                response["result"] = "true"
-                response["status_code"] = "801"
-                response["message"] = "set 값이 없습니다."
-                response["data"] = 0
-            else :
-                lessons = Lesson.objects.get(id=request.data["lesson_id"])
-                lessons.view_yn = 0
-                lessons.save()
-                
-                response["result"] = "true"
-                response["status_code"] = "200"
-                response["message"] = "success"
-                response["data"] = 1
+            lessons = Lesson.objects.get(id=request.data["lesson_id"])
+            lessons.view_yn = 0
+            lessons.save()
+            
+            response["result"] = "true"
+            response["status_code"] = "200"
+            response["message"] = "success"
+            response["data"] = 1
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 예정된 수업 종료 END #########################################################
