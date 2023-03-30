@@ -39,15 +39,21 @@
 
       <div class="d-flex flex-column align-items-start mt-1">
 
-        {% for lesson_name in lessons_name %}
-          <div style="font-size: 14px;">{{ lesson_name.name }}</div>
+        {% for res in result %}
+          <div style="font-size: 14px;">{{ res.name }}</div>
+      
+
           <div>
             <canvas class="w-100" id="myChart{{ forloop.counter0 }}" style="margin-top: -30%;"></canvas>
 
             <script type="text/javascript">
                 window.onload = function() {
-                    {% for lesson_name in lessons_name %}
-                        drawChart({{forloop.counter0}});
+                    {% for res in result %}
+
+                      {% for item in res.list %}
+                      drawChart({{ forloop.counter0 }}, {{ item.set }});
+                      {% endfor %}
+                        
                     {% endfor %}
                 };
             </script>
@@ -82,13 +88,18 @@
 
 <script type="text/javascript">
 
-  function drawChart(dataValue1) {
+  function drawChart(nameCount, setCount) {
     // Graphs
-    const ctx = document.getElementById('myChart'+dataValue1)
+    const ctx = document.getElementById('myChart'+nameCount)
 
+    // 카운트 
     const labels = ['15회', '15회', '15회', '', '', '', ]
 
-    const data = [0,0,0]
+    const data = [];
+
+    for (let i = 0; i < setCount; i++) {
+      data.push(0);
+    }
 
     // eslint-disable-next-line no-unused-vars
     const myChart = new Chart(ctx, {

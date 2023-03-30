@@ -23,6 +23,12 @@ try:
 except ImportError:
     import json
 
+from django.core import serializers
+from django.http import JsonResponse
+from django.db.models import Sum
+import itertools
+
+
 # 공유하기 페이지
 def share(request, user_id, today):
 
@@ -45,9 +51,17 @@ def share(request, user_id, today):
     # 공유하기 운동 이름 그룹 바이 처리 
     lessons_name = list(Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).values('name').annotate(entries=Count('name')))
 
+    queryset = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).values('id', 'name', 'weight', 'count', 'set')
+
+    result = []
+    for key, group in itertools.groupby(queryset, key=lambda x: x['name']):
+        item = {'name': key, 'list': []}
+        for g in group:
+            item['list'].append({'id': g['id'], 'set': g['set'], 'count': g['count'], 'weight': g['weight']})
+        result.append(item)
+
     context = {
-        'lessons': lessons
-        , 'lessons_name': lessons_name
+        'result': result
         , 'trainer_name' : trainer_name
         , 'user_name' : user_name
         , 'year' : year
