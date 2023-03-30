@@ -26,11 +26,14 @@ except ImportError:
 # 공유하기 페이지
 def share(request, user_id, today):
 
+    # 테스트 Url http://127.0.0.1:8000/hypeboy/share/48/20230330
+
     lessons = Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1)
 
     trainer_id = Member.objects.filter(id=user_id).values_list('trainer_group', flat=True)[0]
 
     trainer_name = Member.objects.filter(id=trainer_id).values_list('user_name', flat=True)[0]
+
     user_name = Member.objects.filter(id=user_id).values_list('user_name', flat=True)[0]
 
     today = str(today)
@@ -39,8 +42,12 @@ def share(request, user_id, today):
     month = today[4:6]
     date = today[6:8]
 
+    # 공유하기 운동 이름 그룹 바이 처리 
+    lessons_name = list(Lesson.objects.filter(user_id=user_id, start_date=today, view_yn=1).values('name').annotate(entries=Count('name')))
+
     context = {
         'lessons': lessons
+        , 'lessons_name': lessons_name
         , 'trainer_name' : trainer_name
         , 'user_name' : user_name
         , 'year' : year
