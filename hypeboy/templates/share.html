@@ -48,12 +48,8 @@
 
             <script type="text/javascript">
                 window.onload = function() {
-                    {% for res in result %}
-
-                      {% for item in res.list %}
-                      drawChart({{ forloop.counter0 }}, {{ item.set }});
-                      {% endfor %}
-                        
+                    {% for item in res.list %}
+                      drawChart({{ forloop.counter0 }}, {{ res.list|length }}, {{ item.count }});
                     {% endfor %}
                 };
             </script>
@@ -88,19 +84,22 @@
 
 <script type="text/javascript">
 
-  function drawChart(nameCount, setCount) {
+  function drawChart(nameCount, setCount, count) {
+
+    console.log(count)
+
     // Graphs
     const ctx = document.getElementById('myChart'+nameCount)
 
     // 카운트 
-    const labels = ['15회', '15회', '15회', '', '', '', ]
-
+    const labels = ['', '', '', '', '', '', ]
     const data = [];
 
     for (let i = 0; i < setCount; i++) {
       data.push(0);
+      labels[i] = '0회'
     }
-
+    
     // eslint-disable-next-line no-unused-vars
     const myChart = new Chart(ctx, {
       type: 'line',

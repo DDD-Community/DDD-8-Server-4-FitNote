@@ -60,6 +60,8 @@ def share(request, user_id, today):
             item['list'].append({'id': g['id'], 'set': g['set'], 'count': g['count'], 'weight': g['weight']})
         result.append(item)
 
+    print(result)
+
     context = {
         'result': result
         , 'trainer_name' : trainer_name
