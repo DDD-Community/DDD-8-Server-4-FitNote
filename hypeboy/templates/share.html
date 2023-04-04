@@ -98,7 +98,7 @@
 
     for (let i = 0; i < chartData.length; i++) {
       const { set, count, weight } = chartData[i];
-      data.push(1);
+      data.push(weight);
       labels[i] = count + '회';
     }
 
@@ -147,7 +147,8 @@
           y: {
             display: false,
             beginAtZero: true,
-            max: 1, // max 값 조정
+            min: 0,
+            max: 499, // max 값 조정
             ticks: { // y축 줄당 표시 값
               stepSize: 1
             }
