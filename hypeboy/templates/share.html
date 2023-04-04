@@ -41,21 +41,25 @@
 
         {% for res in result %}
           <div style="font-size: 14px;">{{ res.name }}</div>
-      
-
-          <div>
-            <canvas class="w-100" id="myChart{{ forloop.counter0 }}" style="margin-top: -30%;"></canvas>
-
-            <script type="text/javascript">
-                window.onload = function() {
-                    {% for item in res.list %}
-                      drawChart({{ forloop.counter0 }}, {{ res.list|length }}, {{ item.count }});
-                    {% endfor %}
-                };
-            </script>
-      
-          </div>
+          <canvas class="w-100" id="myChart{{ forloop.counter0 }}" style="margin-top: -30%;"></canvas>
         {% endfor %}
+        
+        <script type="text/javascript">
+          window.onload = function() {
+            {% for res in result %}
+              var chartData{{ forloop.counter0 }} = [
+                {% for data in res.list %}
+                  {
+                    set: {{ data.set }},
+                    count: {{ data.count }},
+                    weight: {{ data.weight|floatformat:1 }}
+                  }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+              ];
+              drawChart({{ forloop.counter0 }}, chartData{{ forloop.counter0 }});
+            {% endfor %}
+          };
+        </script>
         
 
       </div>
@@ -84,22 +88,20 @@
 
 <script type="text/javascript">
 
-  function drawChart(nameCount, setCount, count) {
+  function drawChart(resultCount, chartData) {
 
-    console.log(count)
-
-    // Graphs
-    const ctx = document.getElementById('myChart'+nameCount)
+    const ctx = document.getElementById('myChart'+resultCount)
 
     // 카운트 
     const labels = ['', '', '', '', '', '', ]
     const data = [];
 
-    for (let i = 0; i < setCount; i++) {
-      data.push(0);
-      labels[i] = '0회'
+    for (let i = 0; i < chartData.length; i++) {
+      const { set, count, weight } = chartData[i];
+      data.push(1);
+      labels[i] = count + '회';
     }
-    
+
     // eslint-disable-next-line no-unused-vars
     const myChart = new Chart(ctx, {
       type: 'line',
