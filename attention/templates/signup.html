@@ -1,0 +1,59 @@
+    <form class="form-signin" method="POST" action="{% url 'signup'%}">
+        {%csrf_token%}
+        <br>
+        <div class="form-group">
+            <label for="inputPassword" class="sr-only">Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="email" required>
+            <code class="d-flex justify-content-start my-2 ml-2">Email을 사용하여 비밀번호를 초기화 합니다.</code>
+        </div>
+        <div class="form-group">
+            <label for="text" class="sr-only">Login Id</label>
+            <input type="text" id="inputEmail" name="username" class="form-control" placeholder="Login id" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" name="password1" class="form-control" placeholder="Password"
+                required>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword" class="sr-only">Confirm Password</label>
+            <input type="password" id="inputPassword" name="password2" class="form-control"
+                placeholder="Confirm Password" required>
+        </div>
+        <br>
+        <button class="btn btn-lg btn-secondary btn-block" id="btn-click" type="submit" onclick="javascript_onclikc()">Sign up</button>
+        <hr>
+        <a class="btn btn-lg btn-secondary btn-block" href="{% url 'signin' %}">Back</a>
+    </form>
+</body>
+
+<script type="text/javascript">
+    var dDisplay = true;
+    function doDisplay() {
+        var con = document.getElementById("myDiv");
+        if (con.style.display == 'block') {
+            con.style.display = 'none';
+        } else {
+            con.style.display = 'block';
+        }
+    }
+    function doDisplay2() {
+        var con = document.getElementById("myDiv2");
+        if (con.style.display == 'block') {
+            con.style.display = 'none';
+        } else {
+            con.style.display = 'block';
+        }
+    }
+
+    function javascript_onclikc() {
+        if (document.getElementById("inlineCheckbox1").checked == false) {
+            alert('개인 정보 수집 동의에 체크해 주세요.');
+            return false;
+        } else if (document.getElementById("inlineCheckbox2").checked == false) {
+            alert('위치 정보 수집 동의에 체크해 주세요.');
+            return false;
+        }
+    }
+
+</script>

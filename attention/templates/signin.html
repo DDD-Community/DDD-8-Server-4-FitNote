@@ -1,0 +1,19 @@
+
+<form class="form-signin" method="POST" action="{% url 'signin'%}">
+    {%csrf_token%}
+    <div class="form-group">
+        <label for="text" class="sr-only">Id</label>
+        <input type="text" id="inputEmail" name="username" class="form-control" placeholder="Id" required autofocus>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password"
+            required>
+    </div>
+    <br>
+    <button class="btn btn-lg btn-secondary btn-block" id="btn-click" type="submit">Sign in</button>
+    <hr>
+    <a class="btn btn-lg btn-secondary btn-block" href="{% url 'signup' %}">Sing up</a>
+    <a class="btn btn-lg btn-secondary btn-block" href="{% url 'password_reset' %}">Password reset</a>
+    <p class="mt-5 mb-3 text-muted font-weight-lighter">&copy; 2020. <a href="https://www.instagram.com/integer_ji/">IntegerJi</a> all rights reserved.</p>
+</form>

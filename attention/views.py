@@ -5,17 +5,23 @@ from django.http import JsonResponse
 from django.utils.dateformat import DateFormat
 from django.utils import timezone
 from datetime import datetime
-
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.permissions import IsAuthenticated
+from django.urls import reverse_lazy
+from django.shortcuts import resolve_url
+from django.conf import settings
 
 try:
     from django.utils import simplejson as json
 except ImportError:
     import json
 
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
+)
 from attention.models import Member
 from accounts.models import User
 
@@ -23,6 +29,58 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 UserModel = get_user_model()
+from django.core.mail.message import EmailMessage
+
+def send_email(request):
+    email = EmailMessage(
+        'Title', #이메일 제목
+        'Content', #내용
+        to=['jjs9536@gmail.com'], #받는 이메일
+    )
+    email.send()
+
+def sample(request):
+    return render(request, 'sample.html')
+
+def signup(request):
+    return render(request, 'signup.html')
+
+def signin(request):
+    return render(request, 'signin.html')
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    success_url = reverse_lazy('password_reset_done')
+    form_class = PasswordResetForm
+    
+    def form_valid(self, form):
+        if User.objects.filter(email=self.request.POST.get("email")).exists():
+            return super().form_valid(form)
+        else:
+            return render(self.request, 'password_reset_done_fail.html')
+
+class LogoutViews(LogoutView):
+    next_page = settings.LOGOUT_REDIRECT_URL
+signout = LogoutViews.as_view()
+
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = SetPasswordForm
+    success_url=reverse_lazy('password_reset_complete')
+    template_name = 'password_reset_confirm.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['login_url'] = resolve_url(settings.LOGIN_URL)
+        return context
 
 ## jwt 생성 : membership 테이블 적재 동시 수행하기 위한 함수
 def jwt_signup(id, fullname, email):

@@ -1,164 +1,84 @@
-{% load static %}
-
-<!doctype html>
-<html lang="ko">
-
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-  <meta name="generator" content="Hugo 0.108.0">
-
-  <title>FitNote - share</title>
-
-  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-
-  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
-  <link href="{% static 'css/sign-in.css' %}" rel="stylesheet" />
-
-</head>
-
-<body class="text-center">
-
-  <main class="form-signin w-100 m-auto fixed-top mt-5">
-    <div class="mb-3">수업 공유하기</div>
-
-    <div class="card bg-body-tertiary">
-      <div class="card-body d-flex flex-column align-items-start">
-        <div class="card-title" style="font-size: 14px;">{{year}}년 {{month}}월 {{date}}일</div>
-        <div class="card-subtitle mb-n2 text-muted" style="font-size: 12px;">{{user_name}} 회원님</div>
-      </div>
-    </div>
-
-    <div class="mt-3 mb-2">
-
-      <div class="d-flex flex-column align-items-start mt-1">
-
-        {% for res in result %}
-          <div style="font-size: 14px;">{{ res.name }}</div>
-          <canvas class="w-100" id="myChart{{ forloop.counter0 }}" style="margin-top: -30%;"></canvas>
-        {% endfor %}
-        
-        <script type="text/javascript">
-          window.onload = function() {
-            {% for res in result %}
-              var chartData{{ forloop.counter0 }} = [
-                {% for data in res.list %}
-                  {
-                    set: {{ data.set }},
-                    count: {{ data.count }},
-                    weight: {{ data.weight|floatformat:1 }}
-                  }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-              ];
-              drawChart({{ forloop.counter0 }}, chartData{{ forloop.counter0 }});
-            {% endfor %}
-          };
-        </script>
-        
-
-      </div>
-
-    </div>
-
-    <div class="d-flex justify-content-between mt-3 mb-3 text-muted">
-      <div><a style="font-size: 12px;">체계적인 PT 관리, 핏노트</a></div>
-      <div><a style="font-size: 12px;">트레이너 {{trainer_name}}</a></div>
-    </div>
-
-    <!-- <input type='text' id='input_text' style='position:absolute; left:-9999px' value="http://www.fitnote.co.kr/hypeboy/share/3/20230211"> -->
-
-    <!-- <button class="w-100 btn btn-lg btn-primary" style="font-size: 12px;" type="button" id="btnShare">공유하기</button> -->
-
-    <div class="fixed-bottom mb-5">&copy; FitNote</div>
-  </main>
-
-</body>
-
-<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-
-<!-- <script src="{% static 'css/dashboard.js' %}"></script> -->
-
-<script type="text/javascript">
-
-  function drawChart(resultCount, chartData) {
-
-    const ctx = document.getElementById('myChart'+resultCount)
-
-    // 카운트 
-    const labels = ['', '', '', '', '', '', ]
-    const data = [];
-
-    for (let i = 0; i < chartData.length; i++) {
-      const { set, count, weight } = chartData[i];
-      data.push(weight);
-      labels[i] = count + '회';
+  <title>선 위에 동그라미와 화살표 그리기</title>
+  <style>
+    #line {
+      width: 100%;
+      height: 2px;
+      background-color: black;
+      position: relative;
+      z-index: 1; /* 선을 동그라미 위에 위치시키기 위해 z-index 값을 설정합니다. */
     }
 
-    // eslint-disable-next-line no-unused-vars
-    const myChart = new Chart(ctx, {
-      type: 'line',
-      plugins: [ChartDataLabels],
-      data: {
-        labels: labels,
-        datasets: [{
-          data: data,
-          lineTension: 0,
-          backgroundColor: 'transparent',
-          borderColor: '#007bff',
-          borderWidth: 4,
-          pointBackgroundColor: '#007bff',
-        }]
-      },
-      options: {
-        plugins: {
-          legend: { // 범례 사용 안 함
-            display: false,
-          },
-          tooltip: { // 기존 툴팁 사용 안 함
-            enabled: false
-          },
-          animation: { // 차트 애니메이션 사용 안 함 (옵션)
-            duration: 0,
-          },
-          datalabels: {
-            align: 'top',
-            offset: 8,
-            font: { // font 설정
-              size: '14px',
-            },
-            color: '#222', // font color
-          },
-        },
+    #circles {
+      position: relative; /* 동그라미를 포함하는 컨테이너를 relative로 설정합니다. */
+      height: 10px;
+      margin-top: -6px; /* 동그라미 컨테이너를 선과 겹치도록 위치를 조정합니다. */
+    }
 
-        scales: {
-          x: {
-            grid: {
-              display: false,
-            }
-          },
-          y: {
-            display: false,
-            beginAtZero: true,
-            min: 0,
-            max: 499, // max 값 조정
-            ticks: { // y축 줄당 표시 값
-              stepSize: 1
-            }
-          },
-        },
+    .circle {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: red;
+      position: absolute;
+    }
 
+    .circle.arrow {
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-right: 10px solid black;
+      position: absolute;
+      top: -4px;
+      left: -4px;
+    }
+
+    .circle.hidden {
+      display: none; /* 보이지 않도록 숨깁니다. */
+    }
+  </style>
+</head>
+<body>
+  <div id="line"></div>
+  <div id="circles">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle arrow"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // 데이터 배열
+      const data = [10, 20, 30, 40, 50, 60, 70];
+
+      // 동그라미를 그리는 함수
+      function drawCircles() {
+        const circles = $(".circle");
+        const totalCircles = data.length;
+        const lineWidth = $("#line").width();
+        const circleSpacing = lineWidth / (totalCircles - 1);
+
+        // 선 위에 동그라미 및 화살표 추가
+        circles.each(function(index) {
+          const position = index * circleSpacing;
+          $(this).css("left", position + "px");
+        });
+
+        // 7번째 동그라미를 화살표로 변경
+        circles.eq(6).removeClass("circle").addClass("circle arrow");
       }
-    })
-  }
 
-</script>
-
+      // 동그라미 그리기 호출
+      drawCircles();
+    });
+  </script>
+</body>
 </html>
