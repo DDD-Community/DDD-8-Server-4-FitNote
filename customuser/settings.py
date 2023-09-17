@@ -40,21 +40,39 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 
 ALLOWED_HOSTS = ['*']
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'locallog.log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'ERROR',  # 에러 레벨 이상의 로그만 기록
+            'propagate': False,
+        },
+    },
+}
 
 if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is True : 
     local_check = 'local'
-    DBNAME = get_secret("SERVERLOCAL")
-    HOST = get_secret("LOCALHOST")
-    USER = get_secret("LOCALUSER")
+    DBNAME = get_secret("SERVERLIVE")
+    HOST = get_secret("HOST")
+    USER = get_secret("USER")
 
-    DEBUG = False
+    DEBUG = True
 else :
     local_check = 'live'
     DBNAME = get_secret("SERVERLIVE")
     HOST = get_secret("HOST")
     USER = get_secret("USER")
 
-    DEBUG = False
+    DEBUG = True
 
 # Application definition
 
@@ -248,7 +266,7 @@ handler400 = 'rest_framework.exceptions.bad_request'
 
 LOGIN_URL = '/signin/'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = 'signin'
 
