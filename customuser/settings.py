@@ -126,7 +126,8 @@ WSGI_APPLICATION = 'customuser.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': get_secret("ENGINE"),
-        'NAME': 'fitnote',
+        # 'NAME': 'fitnote',
+        'NAME': DBNAME,
         'USER': USER,
         'PASSWORD': get_secret("PASSWORD"),
         'HOST': HOST,
