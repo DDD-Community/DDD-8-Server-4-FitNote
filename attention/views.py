@@ -90,6 +90,9 @@ def jwt_signup(id, fullname, email):
     member.user_name = fullname
     member.user_email = email
     member.user_type = 1
+    member.user_gender = 3
+    member.user_weight = 0
+    member.user_height = 0
     member.create_date = timezone.datetime.now()
     member.save()
 
