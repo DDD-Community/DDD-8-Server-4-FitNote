@@ -43,9 +43,17 @@ ALLOWED_HOSTS = ['*']
 
 if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is True : 
     local_check = 'local'
+    DBNAME = get_secret("SERVERLOCAL")
+    HOST = get_secret("LOCALHOST")
+    USER = get_secret("LOCALUSER")
+
     DEBUG = False
 else :
     local_check = 'live'
+    DBNAME = get_secret("SERVERLOCAL")
+    HOST = get_secret("HOST")
+    USER = get_secret("USER")
+
     DEBUG = False
 
 # Application definition
@@ -118,10 +126,10 @@ WSGI_APPLICATION = 'customuser.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': get_secret("ENGINE"),
-        'NAME': get_secret("SERVERLIVE"),
-        'USER': get_secret("USER"),
+        'NAME': 'fitnote',
+        'USER': USER,
         'PASSWORD': get_secret("PASSWORD"),
-        'HOST': get_secret("HOST"),
+        'HOST': HOST,
         'PORT': get_secret("PORT"),
     },
     'OPTIONS': {
