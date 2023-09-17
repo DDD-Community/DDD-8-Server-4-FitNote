@@ -61,16 +61,16 @@ LOGGING = {
 
 if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is True : 
     local_check = 'local'
-    DBNAME = get_secret("SERVERLIVE")
-    HOST = get_secret("HOST")
-    USER = get_secret("USER")
+    DBNAME = get_secret("NCPSERVERLIVE")
+    HOST = get_secret("NCPHOST")
+    USER = get_secret("NCPUSER")
 
     DEBUG = True
 else :
     local_check = 'live'
-    DBNAME = get_secret("SERVERLIVE")
-    HOST = get_secret("HOST")
-    USER = get_secret("USER")
+    DBNAME = get_secret("NCPSERVERLIVE")
+    HOST = get_secret("NCPHOST")
+    USER = get_secret("NCPUSER")
 
     DEBUG = True
 
