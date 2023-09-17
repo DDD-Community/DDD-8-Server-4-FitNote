@@ -42,14 +42,10 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = ['*']
 
 if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is True : 
-    local_check = 'live'
-    DBNAME = get_secret("SERVERLIVE")
-
+    local_check = 'local'
     DEBUG = False
 else :
     local_check = 'live'
-    DBNAME = get_secret("SERVERLIVE")
-
     DEBUG = False
 
 # Application definition
@@ -122,7 +118,7 @@ WSGI_APPLICATION = 'customuser.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': get_secret("ENGINE"),
-        'NAME': DBNAME,
+        'NAME': get_secret("SERVERLIVE"),
         'USER': get_secret("USER"),
         'PASSWORD': get_secret("PASSWORD"),
         'HOST': get_secret("HOST"),
