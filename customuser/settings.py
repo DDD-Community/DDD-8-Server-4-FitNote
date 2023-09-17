@@ -50,7 +50,7 @@ if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is Tr
     DEBUG = False
 else :
     local_check = 'live'
-    DBNAME = get_secret("SERVERLOCAL")
+    DBNAME = get_secret("SERVERLIVE")
     HOST = get_secret("HOST")
     USER = get_secret("USER")
 
