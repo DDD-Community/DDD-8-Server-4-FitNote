@@ -218,93 +218,88 @@ def addLesson(request):
     logger.debug(request.data["lessonList"])
     logger.debug(data_type)
 
-    if not getMemberInfo :
+    if not request.data or not request.data.get("lessonList"):
         response["result"] = "true"
-        response["status_code"] = "800"
-        response["message"] = "유저 정보 없음"
+        response["status_code"] = "801"
+        response["message"] = "lessonList 값이 없거나 비어 있습니다."
         response["data"] = []
-    else :
-        if getMemberInfo[0]['fields']['user_type'] == 1 :
+        return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
 
+    lesson_list = request.data["lessonList"]
+
+    for lesson_data in lesson_list:
+        if not lesson_data.get('set') or not lesson_data.get('id') or not lesson_data.get('today') \
+                or not lesson_data.get('name') or not lesson_data.get('weight') or not lesson_data.get('count'):
             response["result"] = "true"
-            response["status_code"] = "700"
-            response["message"] = "트레이너 회원 입니다."
-            response["data"] = []
-        elif request.data["lessonList"]:
-                            
-            logger.debug(request.data["lessonList"])
-            logger.debug(data_type)
-            
-            if not request.data or not request.data.get("lessonList"):
-                response["result"] = "true"
-                response["status_code"] = "801"
-                response["message"] = "lessonList 값이 없거나 비어 있습니다."
-                response["data"] = []
-                return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
+            response["status_code"] = "806"
+            response["message"] = "필수 필드가 누락되었습니다."
+            response["data"] = 0
+            return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
 
-            lesson_list = request.data["lessonList"]
-
-            for lesson_data in lesson_list:
-                if not lesson_data.get('set') or not lesson_data.get('id') or not lesson_data.get('today') \
-                        or not lesson_data.get('name') or not lesson_data.get('weight') or not lesson_data.get('count'):
-                    response["result"] = "true"
-                    response["status_code"] = "806"
-                    response["message"] = "필수 필드가 누락되었습니다."
-                    response["data"] = 0
-                    return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
-
-                lesson = Lesson()
-                lesson.user_id = lesson_data['id']
-                lesson.name = lesson_data['name']
-                lesson.weight = lesson_data['weight']
-                lesson.count = lesson_data['count']
-                lesson.set = lesson_data['set']
-                lesson.start_date = lesson_data['today']
-                lesson.create_date = timezone.datetime.now()
-                lesson.save()
+        lesson = Lesson()
+        lesson.user_id = lesson_data['id']
+        lesson.name = lesson_data['name']
+        lesson.weight = lesson_data['weight']
+        lesson.count = lesson_data['count']
+        lesson.set = lesson_data['set']
+        lesson.start_date = lesson_data['today']
+        lesson.create_date = timezone.datetime.now()
+        lesson.save()
 
 
-        else :
-            if not request.data["set"] :
-                response["result"] = "true"
-                response["status_code"] = "801"
-                response["message"] = "set 값이 없습니다."
-                response["data"] = 0
-            elif not request.data['today'] :
-                response["result"] = "true"
-                response["status_code"] = "802"
-                response["message"] = "today 값이 없습니다."
-                response["data"] = 0
-            elif not request.data['name'] :
-                response["result"] = "true"
-                response["status_code"] = "803"
-                response["message"] = "name 값이 없습니다."
-                response["data"] = 0
-            elif not request.data['weight'] :
-                response["result"] = "true"
-                response["status_code"] = "804"
-                response["message"] = "weight 값이 없습니다."
-                response["data"] = 0
-            elif not request.data['count'] :
-                response["result"] = "true"
-                response["status_code"] = "805"
-                response["message"] = "count 값이 없습니다."
-                response["data"] = 0
-            else :
-                lesson = Lesson()
-                lesson.user_id = request.data['id']
-                lesson.name = request.data['name']
-                lesson.weight = request.data['weight']
-                lesson.count = request.data['count']
-                lesson.set = request.data['set']
-                lesson.start_date = request.data['today']
-                lesson.create_date = timezone.datetime.now()
-                lesson.save()
+    # if not getMemberInfo :
+    #     response["result"] = "true"
+    #     response["status_code"] = "800"
+    #     response["message"] = "유저 정보 없음"
+    #     response["data"] = []
+    # else :
+    #     if getMemberInfo[0]['fields']['user_type'] == 1 :
 
-            response["result"] = "true"
-            response["status_code"] = "200"
-            response["message"] = "success"
-            response["data"] = 1
+    #         response["result"] = "true"
+    #         response["status_code"] = "700"
+    #         response["message"] = "트레이너 회원 입니다."
+    #         response["data"] = []
+    #     else :
+    #         if not request.data["set"] :
+    #             response["result"] = "true"
+    #             response["status_code"] = "801"
+    #             response["message"] = "set 값이 없습니다."
+    #             response["data"] = 0
+    #         elif not request.data['today'] :
+    #             response["result"] = "true"
+    #             response["status_code"] = "802"
+    #             response["message"] = "today 값이 없습니다."
+    #             response["data"] = 0
+    #         elif not request.data['name'] :
+    #             response["result"] = "true"
+    #             response["status_code"] = "803"
+    #             response["message"] = "name 값이 없습니다."
+    #             response["data"] = 0
+    #         elif not request.data['weight'] :
+    #             response["result"] = "true"
+    #             response["status_code"] = "804"
+    #             response["message"] = "weight 값이 없습니다."
+    #             response["data"] = 0
+    #         elif not request.data['count'] :
+    #             response["result"] = "true"
+    #             response["status_code"] = "805"
+    #             response["message"] = "count 값이 없습니다."
+    #             response["data"] = 0
+    #         else :
+    #             lesson = Lesson()
+    #             lesson.user_id = request.data['id']
+    #             lesson.name = request.data['name']
+    #             lesson.weight = request.data['weight']
+    #             lesson.count = request.data['count']
+    #             lesson.set = request.data['set']
+    #             lesson.start_date = request.data['today']
+    #             lesson.create_date = timezone.datetime.now()
+    #             lesson.save()
+
+    #         response["result"] = "true"
+    #         response["status_code"] = "200"
+    #         response["message"] = "success"
+    #         response["data"] = 1
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 예정된 수업 추가 END #########################################################
