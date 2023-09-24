@@ -26,8 +26,7 @@ except ImportError:
 from django.core import serializers
 from django.http import JsonResponse
 from django.db.models import Sum
-import itertools
-
+import itertools, logging
 
 # 공유하기 페이지
 def share(request, user_id, today):
@@ -211,6 +210,13 @@ def addLesson(request):
         return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 
     getMemberInfo = json.loads(serializers.serialize('json', Member.objects.filter(id=request.data['id'])))
+
+    # 원하는 위치에 로그를 남깁니다.
+    logger = logging.getLogger('django.request')
+    data_type = type(request.data["lessonList"])
+
+    logger.debug(request.data["lessonList"])
+    logger.debug(data_type)
 
     if not getMemberInfo :
         response["result"] = "true"

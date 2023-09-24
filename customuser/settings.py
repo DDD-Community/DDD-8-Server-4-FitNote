@@ -15,6 +15,7 @@ from datetime import timedelta
 
 import os, json
 from django.core.exceptions import ImproperlyConfigured
+import pymysql
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 
 ALLOWED_HOSTS = ['*']
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -48,16 +50,24 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'locallog.log',
+            'formatter': 'custom',
+        },
+    },
+    'formatters': {
+        'custom': {
+            'format': '%(asctime)s [%(levelname)s] - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
     'loggers': {
         'django.request': {
             'handlers': ['file'],
-            'level': 'ERROR',  # 에러 레벨 이상의 로그만 기록
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
 }
+
 
 if os.path.isfile('/Users/int/Development/workspace/daf-project/local.py') is True : 
     local_check = 'local'
@@ -139,6 +149,8 @@ WSGI_APPLICATION = 'customuser.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+pymysql.install_as_MySQLdb()
 
 # mysql 설정
 DATABASES = {
