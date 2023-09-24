@@ -198,6 +198,7 @@ def ingLesson(request):
 @permission_classes((IsAuthenticated, ))
 @authentication_classes((JWTAuthentication,))
 def addLesson(request):
+    logger = logging.getLogger('django.request')
 
     response = {}
 
@@ -214,7 +215,6 @@ def addLesson(request):
     getMemberInfo = json.loads(serializers.serialize('json', Member.objects.filter(id=request.data['id'])))
 
     # 원하는 위치에 로그를 남깁니다.
-    logger = logging.getLogger('django.request')
     data_type = type(request.data["lessonList"])
 
     logger.debug(request.data["lessonList"])
