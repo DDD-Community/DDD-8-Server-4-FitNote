@@ -230,6 +230,40 @@ def addLesson(request):
             response["status_code"] = "700"
             response["message"] = "트레이너 회원 입니다."
             response["data"] = []
+        elif request.data["lessonList"]:
+                            
+            logger.debug(request.data["lessonList"])
+            logger.debug(data_type)
+            
+            if not request.data or not request.data.get("lessonList"):
+                response["result"] = "true"
+                response["status_code"] = "801"
+                response["message"] = "lessonList 값이 없거나 비어 있습니다."
+                response["data"] = []
+                return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
+
+            lesson_list = request.data["lessonList"]
+
+            for lesson_data in lesson_list:
+                if not lesson_data.get('set') or not lesson_data.get('id') or not lesson_data.get('today') \
+                        or not lesson_data.get('name') or not lesson_data.get('weight') or not lesson_data.get('count'):
+                    response["result"] = "true"
+                    response["status_code"] = "806"
+                    response["message"] = "필수 필드가 누락되었습니다."
+                    response["data"] = 0
+                    return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
+
+                lesson = Lesson()
+                lesson.user_id = lesson_data['id']
+                lesson.name = lesson_data['name']
+                lesson.weight = lesson_data['weight']
+                lesson.count = lesson_data['count']
+                lesson.set = lesson_data['set']
+                lesson.start_date = lesson_data['today']
+                lesson.create_date = timezone.datetime.now()
+                lesson.save()
+
+
         else :
             if not request.data["set"] :
                 response["result"] = "true"
@@ -267,10 +301,10 @@ def addLesson(request):
                 lesson.create_date = timezone.datetime.now()
                 lesson.save()
 
-                response["result"] = "true"
-                response["status_code"] = "200"
-                response["message"] = "success"
-                response["data"] = 1
+            response["result"] = "true"
+            response["status_code"] = "200"
+            response["message"] = "success"
+            response["data"] = 1
 
     return JsonResponse(response, json_dumps_params = {'ensure_ascii': False})
 ######################################################### 회원의 예정된 수업 추가 END #########################################################
