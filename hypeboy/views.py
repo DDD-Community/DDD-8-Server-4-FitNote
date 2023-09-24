@@ -201,6 +201,8 @@ def addLesson(request):
 
     response = {}
 
+    logger.debug(request.data["id"])
+
     if not request.data :
         response["result"] = "true"
         response["status_code"] = "801"
