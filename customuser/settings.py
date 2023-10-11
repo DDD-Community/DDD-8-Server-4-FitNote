@@ -42,8 +42,6 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = ['*']
 
-SESSION_COOKIE_SECURE=True
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -125,8 +123,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'customuser.urls'
 
