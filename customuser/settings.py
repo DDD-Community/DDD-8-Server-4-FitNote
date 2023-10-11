@@ -42,6 +42,8 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = ['*']
 
+SESSION_COOKIE_SECURE=True
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
