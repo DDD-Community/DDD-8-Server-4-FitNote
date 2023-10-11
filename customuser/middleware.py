@@ -8,10 +8,15 @@ class AuthorizationHeaderLoggingMiddleware:
         # Authorization 헤더 값 확인
         authorization_header = request.META.get('HTTP_AUTHORIZATION', 'No Authorization Header')
 
-        # 로그에 Authorization 헤더 출력
-        logger = logging.getLogger(__name__)
-        logger.warn(f"Authorization Header: {authorization_header}")
-        logger.warn('==')
+        # 로거 설정
+        logger = logging.getLogger('custom.authorization')
+
+        if authorization_header is None:
+            logger.warn("Authorization Header is absent")
+        elif authorization_header == '':
+            logger.warn("Authorization Header is empty")
+        else:
+            logger.warn(f"Authorization Header value: {authorization_header}")
 
         response = self.get_response(request)
         return response
