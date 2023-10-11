@@ -10,7 +10,8 @@ class AuthorizationHeaderLoggingMiddleware:
 
         # 로그에 Authorization 헤더 출력
         logger = logging.getLogger(__name__)
-        logger.info(f"Authorization Header: {authorization_header}")
+        logger.warn(f"Authorization Header: {authorization_header}")
+        logger.warn('==')
 
         response = self.get_response(request)
         return response
